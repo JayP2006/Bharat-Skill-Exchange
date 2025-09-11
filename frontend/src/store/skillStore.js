@@ -3,15 +3,13 @@ import api from '@/utils/api';
 import toast from 'react-hot-toast';
 
 const useSkillStore = create((set) => ({
-  // --- STATE ---
-  skills: [], // For the public search page
-  skill: null,  // For the single skill/booking page
-  mySkills: [], // For the Guru's own profile page
+
+  skills: [], 
+  skill: null,  
+  mySkills: [], 
   loading: false,
 
-  // --- ACTIONS ---
-
-  // Fetches all skills for the public search page (with search/location)
+  
   fetchSkills: async (params = {}) => {
     set({ loading: true });
     try {
@@ -23,7 +21,7 @@ const useSkillStore = create((set) => ({
     }
   },
 
-  // Fetches a single skill by its ID
+  
   fetchSkillById: async (id) => {
     set({ loading: true, skill: null });
     try {
@@ -35,7 +33,7 @@ const useSkillStore = create((set) => ({
     }
   },
   
-  // Fetches only the skills belonging to the logged-in Guru
+  
   fetchMySkills: async () => {
     set({ loading: true });
     try {
@@ -47,7 +45,7 @@ const useSkillStore = create((set) => ({
     }
   },
 
-  // Creates a new skill
+  
   createSkill: async (skillFormData) => {
     set({ loading: true });
     console.log("Creating skill with data:", skillFormData);
@@ -70,7 +68,7 @@ const useSkillStore = create((set) => ({
     }
   },
 
-  // Updates an existing skill
+  
   updateSkill: async (skillId, skillFormData) => {
     set({ loading: true });
     try {
@@ -92,7 +90,7 @@ const useSkillStore = create((set) => ({
     }
   },
 
-  // Deletes a skill
+  
   deleteSkill: async (skillId) => {
     try {
       await api.delete(`/skills/${skillId}`);

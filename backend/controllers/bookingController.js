@@ -4,10 +4,9 @@ const { createOrder } = require('../utils/payments');
 exports.createBooking = async (req, res, next) => {
   const { guru, skill, startTime, endTime, totalAmount } = req.body;
   try {
-    // 1. Create a Razorpay order
+    
     const order = await createOrder(totalAmount * 100, `Booking for skill ${skill}`);
     
-    // 2. Create the booking in our DB with status 'Pending'
     const booking = await Booking.create({
       shishya: req.user.id,
       guru,
@@ -42,7 +41,7 @@ exports.verifyPaymentAndUpdateBooking = async (req, res, next) => {
             return res.status(404).json({ message: 'Booking not found' });
         }
         
-        // Logic to verify signature (from payments.js)
+        
         const { isSignatureValid } = require('../utils/payments');
         if (isSignatureValid(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
             booking.paymentDetails.razorpayPaymentId = razorpay_payment_id;
@@ -50,7 +49,7 @@ exports.verifyPaymentAndUpdateBooking = async (req, res, next) => {
             booking.status = 'Confirmed';
             await booking.save();
             
-            // Emit socket event to notify Guru
+            
             const io = req.app.get('io');
             io.to(booking.guru.toString()).emit('new_booking', booking);
 
@@ -63,7 +62,7 @@ exports.verifyPaymentAndUpdateBooking = async (req, res, next) => {
     }
 };
 
-// Other controller functions (get bookings, etc.) can be added here
+
 exports.getMyBookings = async (req, res, next) => {
     try {
         const bookings = await Booking.find({ shishya: req.user.id }).populate('guru skill');

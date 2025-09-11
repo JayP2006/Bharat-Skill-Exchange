@@ -4,11 +4,11 @@ import useAuthStore from '@/store/authStore';
 import useMessageStore from '@/store/messageStore';
 import { create } from 'zustand';
 
-// Store to hold the single socket instance. This is better than managing it in a hook.
+
 const useSocketStore = create((set) => ({
   socket: null,
   connect: (userId) => {
-    // Prevent creating multiple connections
+   
     if (useSocketStore.getState().socket) {
       return;
     }
@@ -35,7 +35,7 @@ const useSocketStore = create((set) => ({
   },
 }));
 
-// This is now a simple hook that uses the store to manage the connection lifecycle.
+
 export const useSocket = () => {
   const { user } = useAuthStore();
   const { connect, disconnect } = useSocketStore();
@@ -45,7 +45,7 @@ export const useSocket = () => {
       connect(user._id);
     }
 
-    // This cleanup function will run when the user logs out
+
     return () => {
       disconnect();
     };

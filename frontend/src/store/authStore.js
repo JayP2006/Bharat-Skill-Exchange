@@ -40,11 +40,10 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-  // ✅ NEW, CORRECTED CODE
+  
 logout: () => {
   localStorage.removeItem('token');
-  // Call the new disconnect function from our socket store.
-  // This handles everything: disconnecting and setting the state to null.
+  
   useSocketStore.getState().disconnect(); 
   
   set({ user: null, token: null, loading: false });

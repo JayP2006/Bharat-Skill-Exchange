@@ -6,7 +6,7 @@ import MessageList from '@/components/Messaging/MessageList';
 import Chat from '@/components/Messaging/Chat';
 import { MessageSquare } from 'lucide-react';
 
-// This is also a placeholder until the contact list is dynamic
+
 const DUMMY_CONTACTS = [
     { _id: 'user_id_1', name: 'Rohan Sharma', avatar: 'https://github.com/shadcn.png' },
     { _id: 'user_id_2', name: 'Priya Patel', avatar: 'https://github.com/shadcn.png' },

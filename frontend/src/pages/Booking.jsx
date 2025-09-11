@@ -27,7 +27,7 @@ const Booking = () => {
     }, [skillId, fetchSkillById]);
 
     const handleReviewSubmit = (newReview) => {
-        // Backend se populated shishya data ke saath naya review add karein
+        
         setReviews(prevReviews => [newReview, ...prevReviews]);
     };
 
@@ -37,7 +37,7 @@ const Booking = () => {
         return <div className="flex h-[60vh] w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
     }
     
-    // Check karein ki current logged-in Shishya ne pehle se review kiya hai ya nahi
+   
     const hasUserReviewed = reviews.some(review => review.shishya._id === user?._id);
 
     return (
@@ -58,7 +58,7 @@ const Booking = () => {
                     </CardContent>
                 </Card>
 
-                {/* Sirf Shishyas ke liye review form dikhayein, aur tabhi jab unhone pehle review na kiya ho */}
+              
                 {user?.role === 'Shishya' && !hasUserReviewed && (
                     <Card>
                         <CardHeader><CardTitle>Leave a Review</CardTitle><CardDescription>Share your experience with the community.</CardDescription></CardHeader>

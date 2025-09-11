@@ -17,4 +17,3 @@ exports.getAllWorkshops = async (req, res, next) => {
         next(error);
     }
 };
-// Add booking logic similar to skill booking

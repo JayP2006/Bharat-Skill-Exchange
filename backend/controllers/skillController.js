@@ -1,14 +1,12 @@
 const Skill = require('../models/Skill');
 
-// @desc    Get all skills with filtering, searching, and geospatial queries
-// @route   GET /api/skills
-// @access  Public
+
 exports.getAllSkills = async (req, res, next) => {
   try {
     const { search, lat, lng, radius } = req.query;
     let query = {};
 
-    // 1. Text Search Logic
+    
     if (search) {
       const searchRegex = new RegExp(search, 'i');
       query.$or = [
@@ -18,11 +16,11 @@ exports.getAllSkills = async (req, res, next) => {
       ];
     }
 
-    // 2. Geospatial "Nearby" Search Logic
+    
     if (lat && lng) {
       const latitude = parseFloat(lat);
       const longitude = parseFloat(lng);
-      const searchRadius = parseFloat(radius) || 10; // Default 10km radius
+      const searchRadius = parseFloat(radius) || 10; 
       const earthRadiusKm = 6378.1;
       const radiusInRadians = searchRadius / earthRadiusKm;
 
@@ -31,7 +29,7 @@ exports.getAllSkills = async (req, res, next) => {
           $centerSphere: [[longitude, latitude], radiusInRadians]
         }
       };
-      query.mode = 'Offline'; // Location search only for offline skills
+      query.mode = 'Offline'; 
     }
 
     const skills = await Skill.find(query).populate('guru', 'name avatar');
@@ -43,7 +41,7 @@ exports.getAllSkills = async (req, res, next) => {
   }
 };
 
-// @desc    Create a new skill
+
 exports.createSkill = async (req, res, next) => {
   try {
     const { title, description, tags, hourlyRate, mode, coordinates, address } = req.body;
@@ -70,7 +68,7 @@ exports.createSkill = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single skill by ID
+
 exports.getSkillById = async (req, res, next) => {
     try {
         const skill = await Skill.findById(req.params.id).populate('guru', 'name avatar bio');
@@ -83,7 +81,7 @@ exports.getSkillById = async (req, res, next) => {
     }
 };
 
-// @desc    Get logged in user's skills
+
 exports.getMySkills = async (req, res, next) => {
     try {
         const skills = await Skill.find({ guru: req.user.id });
@@ -94,10 +92,10 @@ exports.getMySkills = async (req, res, next) => {
     }
 };
 
-// @desc    Update a skill
+
 exports.updateSkill = async (req, res, next) => {
     try {
-        // Essential security checks to find the skill and verify the owner
+        
         const skill = await Skill.findById(req.params.id);
         console.log("Skill found for update:", skill);
         if (!skill) {
@@ -107,20 +105,19 @@ exports.updateSkill = async (req, res, next) => {
             return res.status(401).json({ message: 'User not authorized' });
         }
         
-        // Start with all the text data from the form
         const updateData = { ...req.body };
         
-        // Ensure tags are always saved as an array
+      
         if (updateData.tags && typeof updateData.tags === 'string') {
             updateData.tags = updateData.tags.split(',').map(tag => tag.trim());
         }
 
-        // Add any new file uploads to the update
+       
         if (req.files && req.files.length > 0) {
             updateData.media = req.files.map(file => file.path);
         }
 
-        // Handle location logic based on the selected mode
+        
         if (updateData.mode === 'Offline' && updateData.coordinates) {
           updateData.location = {
             type: 'Point',
@@ -128,11 +125,11 @@ exports.updateSkill = async (req, res, next) => {
             address: updateData.address
           };
         } else if (updateData.mode === 'Online') {
-          // If the Guru switches to Online, remove the location data
+          
           updateData.location = undefined;
         }
 
-        // Find the skill by its ID and apply all the updates at once
+        
         const updatedSkill = await Skill.findByIdAndUpdate(
     req.params.id,
     { $set: updateData, $unset: updateData.location === undefined ? { location: "" } : {} },
@@ -148,7 +145,7 @@ exports.updateSkill = async (req, res, next) => {
     }
 };
 
-// @desc    Delete a skill
+
 exports.deleteSkill = async (req, res, next) => {
     try {
         const skill = await Skill.findById(req.params.id);

@@ -10,7 +10,7 @@ import { PlusCircle, Loader2, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/DropdownMenu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 
-// Profile page ke liye ek special SkillCard jismein edit/delete options hain
+
 const ProfileSkillCard = ({ skill, onEdit, onDelete }) => {
   return (
     <Card className="overflow-hidden group">
@@ -37,7 +37,7 @@ const Profile = () => {
   const { user, loading: userLoading } = useAuthStore();
   const { mySkills, loading: skillsLoading, fetchMySkills, deleteSkill } = useSkillStore();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingSkill, setEditingSkill] = useState(null); // Edit kiye jaane wale skill ko store karne ke liye
+  const [editingSkill, setEditingSkill] = useState(null); 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -48,12 +48,12 @@ const Profile = () => {
 
   const getInitials = (name = '') => name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
 
-  // Jab bhi koi skill create ya update ho, is function ko call karein
+  
   const handleSuccess = () => {
     setShowCreateForm(false);
     setIsEditDialogOpen(false);
     setEditingSkill(null);
-    fetchMySkills(); // List ko refresh karein
+    fetchMySkills(); 
   };
 
   const handleEditClick = (skill) => {
@@ -62,7 +62,7 @@ const Profile = () => {
   };
   
   const handleDeleteClick = (skillId) => {
-    // Confirmation maangein
+   
     if (window.confirm("Are you sure you want to delete this skill? This cannot be undone.")) {
       deleteSkill(skillId);
     }
@@ -83,9 +83,9 @@ const Profile = () => {
           </CardHeader>
         </Card>
 
-        {/* Right Side Content */}
+       
         <div className="w-full md:w-2/3 space-y-8">
-          {/* My Skills Section (Sirf Gurus ke liye) */}
+         
           {user.role === 'Guru' && (
             <Card>
               <CardHeader>
@@ -117,7 +117,7 @@ const Profile = () => {
             </Card>
           )}
 
-          {/* My Bookings Section */}
+          
           <Card>
             <CardHeader><CardTitle>My Bookings</CardTitle><CardDescription>Your upcoming and past sessions.</CardDescription></CardHeader>
             <CardContent><p className="text-sm text-muted-foreground text-center py-4">You have no bookings.</p></CardContent>
@@ -125,7 +125,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Edit Skill Dialog (Pop-up Modal) */}
+     
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader><DialogTitle>Edit Skill</DialogTitle></DialogHeader>

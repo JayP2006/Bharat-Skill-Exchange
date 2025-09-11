@@ -13,7 +13,7 @@ const { authorize } = require('../middlewares/role');
 const { upload } = require('../config/cloudinary');
 const router = express.Router();
 
-// ✅ Place the more specific '/my-skills' route BEFORE the general '/' route
+
 router.get('/my-skills', protect, getMySkills);
 
 router.route('/')

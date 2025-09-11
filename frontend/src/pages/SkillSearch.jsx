@@ -13,7 +13,7 @@ const SkillSearch = () => {
     const [isLocating, setIsLocating] = useState(false);
 
     useEffect(() => {
-        // Initial fetch without any parameters
+       
         fetchSkills();
     }, [fetchSkills]);
 

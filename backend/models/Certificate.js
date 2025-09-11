@@ -6,8 +6,8 @@ const CertificateSchema = new mongoose.Schema({
   skill: { type: mongoose.Schema.ObjectId, ref: 'Skill' },
   workshop: { type: mongoose.Schema.ObjectId, ref: 'Workshop' },
   issueDate: { type: Date, default: Date.now },
-  certificateUrl: { type: String, required: true }, // URL from Cloudinary/S3
-  verificationCode: { type: String, required: true, unique: true }, // For QR code validation
+  certificateUrl: { type: String, required: true },
+  verificationCode: { type: String, required: true, unique: true }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Certificate', CertificateSchema);

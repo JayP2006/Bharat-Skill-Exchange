@@ -40,7 +40,6 @@ const AdminPanel = () => {
           </CardContent>
         </Card>
       </div>
-      {/* Placeholder for more detailed tables and charts */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Bookings</CardTitle>

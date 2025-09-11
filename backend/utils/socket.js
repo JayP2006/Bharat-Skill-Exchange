@@ -15,7 +15,7 @@ const initializeSocket = (server) => {
   io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    // Add user to online list
+   
     socket.on('add_user', async (userId) => {
       onlineUsers.set(userId, socket.id);
       socket.join(userId);
@@ -24,7 +24,7 @@ const initializeSocket = (server) => {
       console.log(`User ${userId} is online.`);
     });
 
-    // Private message
+    
     socket.on('send_message', async (data) => {
       const { sender, receiver, content } = data;
       const receiverSocketId = onlineUsers.get(receiver);
@@ -36,7 +36,7 @@ const initializeSocket = (server) => {
       }
     });
     
-    // Typing indicators
+    
     socket.on('typing', ({ receiver, isTyping }) => {
         const receiverSocketId = onlineUsers.get(receiver);
         if(receiverSocketId) {
@@ -44,7 +44,7 @@ const initializeSocket = (server) => {
         }
     });
 
-    // WebRTC Signaling
+    
     socket.on('webrtc_offer', ({ offer, to }) => {
         const receiverSocketId = onlineUsers.get(to);
         if(receiverSocketId) {
@@ -66,7 +66,7 @@ const initializeSocket = (server) => {
         }
     });
 
-    // Disconnect
+    
     socket.on('disconnect', () => {
       let userId;
       for (let [key, value] of onlineUsers.entries()) {

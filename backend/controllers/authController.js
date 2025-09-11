@@ -1,14 +1,13 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// ✅ Helper function to generate JWT
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '1d',
   });
 };
 
-// ✅ Register User
 exports.registerUser = async (req, res, next) => {
   const { name, email, password, role, coordinates } = req.body;
 
@@ -29,12 +28,12 @@ exports.registerUser = async (req, res, next) => {
     if (user) {
       const token = generateToken(user._id);
 
-      // ✅ Save token in cookie
+    
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // only https in production
+        secure: process.env.NODE_ENV === "production", 
         sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        maxAge: 24 * 60 * 60 * 1000, 
       });
 
       res.status(201).json({
@@ -42,7 +41,7 @@ exports.registerUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        token, // optional if you also want frontend to store
+        token,
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -52,7 +51,7 @@ exports.registerUser = async (req, res, next) => {
   }
 };
 
-// ✅ Login User
+
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -62,7 +61,7 @@ exports.loginUser = async (req, res, next) => {
     if (user && (await user.matchPassword(password))) {
       const token = generateToken(user._id);
 
-      // ✅ Save token in cookie
+      
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -85,7 +84,7 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
-// ✅ Get Current User
+
 exports.getMe = async (req, res, next) => {
   res.status(200).json(req.user);
 };

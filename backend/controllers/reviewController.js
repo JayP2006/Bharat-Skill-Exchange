@@ -3,7 +3,7 @@ const Review = require('../models/Review');
 exports.createReview = async (req, res, next) => {
     const { guru, skill, rating, comment } = req.body;
     try {
-        // Add check to ensure user has completed a booking for this skill
+        
         const review = await Review.create({
             shishya: req.user.id,
             guru,

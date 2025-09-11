@@ -9,7 +9,7 @@ const ReviewSchema = new mongoose.Schema({
   comment: { type: String, required: true },
 }, { timestamps: true });
 
-// Static method to calculate average rating and save
+
 ReviewSchema.statics.getAverageRating = async function(skillId) {
   const obj = await this.aggregate([
     { $match: { skill: skillId } },

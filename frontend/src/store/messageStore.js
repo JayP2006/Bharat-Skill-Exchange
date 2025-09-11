@@ -13,7 +13,7 @@ contacts: [],
   activeConversation: null,
   loading: false,
 
-  // 👇 ADD THIS NEW FUNCTION
+ 
   fetchContacts: async () => {
     set({ loading: true });
     try {
@@ -47,7 +47,7 @@ contacts: [],
     const socket = useSocketStore.getState().socket;
     if (socket) {
       socket.emit('send_message', messageData);
-      // Optimistically update UI
+     
       set((state) => ({
         messages: [...state.messages, { ...messageData, _id: Date.now(), createdAt: new Date().toISOString() }]
       }));
@@ -58,13 +58,13 @@ contacts: [],
 
   addReceivedMessage: (message) => {
     const activeConv = get().activeConversation;
-    // Only add the message if it belongs to the currently active conversation
+   
     if (message.sender === activeConv) {
       set((state) => ({
         messages: [...state.messages, message]
       }));
     } else {
-      // Notify user of a new message from someone else
+     
       toast(`New message from another user!`, { icon: '📬' });
     }
   }
