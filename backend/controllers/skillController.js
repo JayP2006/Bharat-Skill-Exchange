@@ -47,6 +47,7 @@ exports.getAllSkills = async (req, res, next) => {
 exports.createSkill = async (req, res, next) => {
   try {
     const { title, description, tags, hourlyRate, mode, coordinates, address } = req.body;
+    console.log("Creating skill with data:", req.user);
     const newSkill = {
       guru: req.user.id,
       title, description, tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
@@ -61,8 +62,10 @@ exports.createSkill = async (req, res, next) => {
       };
     }
     const skill = await Skill.create(newSkill);
+    console.log("Skill created successfully:", skill);
     res.status(201).json(skill);
   } catch (error) {
+    console.log("Error creating skill:", error);
     next(error);
   }
 };

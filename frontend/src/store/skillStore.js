@@ -50,10 +50,12 @@ const useSkillStore = create((set) => ({
   // Creates a new skill
   createSkill: async (skillFormData) => {
     set({ loading: true });
+    console.log("Creating skill with data:", skillFormData);
     try {
       const { data } = await api.post('/skills', skillFormData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      console.log("Skill created:", data);
       toast.success('Skill created successfully!');
       set((state) => ({ 
         mySkills: [data, ...state.mySkills], 
@@ -61,6 +63,7 @@ const useSkillStore = create((set) => ({
       }));
       return data;
     } catch (error) {
+      console.log("Error creating skill:", error.message);
       toast.error(error.response?.data?.message || 'Failed to create skill.');
       set({ loading: false });
       return null;

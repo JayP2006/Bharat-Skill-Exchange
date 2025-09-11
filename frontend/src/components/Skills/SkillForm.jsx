@@ -59,7 +59,7 @@ const SkillForm = ({ skillToEdit, onSuccess }) => {
   const onSubmit = async (formData) => {
     const skillPayload = new FormData();
     const mediaFiles = formData.media;
-
+    console.log("Form Data Submitted:", formData);
     for (const key in formData) {
       if (key !== 'media') {
         skillPayload.append(key, formData[key]);

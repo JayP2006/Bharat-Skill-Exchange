@@ -22,7 +22,6 @@ router.route('/')
 
 router.route('/:id')
   .get(getSkillById)
-  .put(protect, authorize('Guru'), updateSkill)
+  .put(protect, authorize('Guru'), upload.array('media', 5), updateSkill)
   .delete(protect, authorize('Guru'), deleteSkill);
-
 module.exports = router;
