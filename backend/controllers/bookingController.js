@@ -1,12 +1,22 @@
 const Booking = require('../models/Booking');
-const { createOrder } = require('../utils/payments');
+// 'createOrder' ki ab zaroorat nahi hai
+// const { createOrder } = require('../utils/payments');
 
+// @desc    Create a direct booking without payment
+// @route   POST /api/bookings
+// @access  Private
 exports.createBooking = async (req, res, next) => {
   const { guru, skill, startTime, endTime, totalAmount } = req.body;
   try {
-    
-    const order = await createOrder(totalAmount * 100, `Booking for skill ${skill}`);
-    
+    // Razorpay logic ko poori tarah hata dein.
+    const bookingfind = await Booking.findOne({
+  shishya: req.user.id,
+  guru,
+});
+if (bookingfind) {
+  return res.status(400).json({ message: "You have already booked this guru." });
+}
+ 
     const booking = await Booking.create({
       shishya: req.user.id,
       guru,
@@ -14,60 +24,66 @@ exports.createBooking = async (req, res, next) => {
       startTime,
       endTime,
       totalAmount,
+      status: 'Confirmed', // ✅ Seedhe confirmed!
       paymentDetails: {
-        razorpayOrderId: order.id,
-        paymentStatus: 'Pending',
+        paymentStatus: 'Paid (Bypassed)', // Ek note ki payment bypass hua hai
       }
     });
 
-    res.status(201).json({
-        booking,
-        razorpayOrderId: order.id,
-        razorpayKeyId: process.env.RAZORPAY_KEY_ID,
-        amount: order.amount
-    });
+    // Sirf booking object wapas bhejein
+    res.status(201).json({ booking });
+
   } catch (error) {
+    console.error("Error creating direct booking:", error);
     next(error);
   }
 };
 
+// verifyPaymentAndUpdateBooking function ki ab zaroorat nahi hai,
+// lekin use rakha jaa sakta hai agar aap baad mein payment add karna chahein.
 exports.verifyPaymentAndUpdateBooking = async (req, res, next) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const { id: bookingId } = req.params;
+    res.status(200).json({ message: "Verification not needed for direct booking." });
+};
 
+// getMyBookings waise hi kaam karega
+exports.getMyBookings = async (req, res, next) => {
     try {
-        const booking = await Booking.findById(bookingId);
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
+        // --- DEBUGGING ---
+        console.log(`Fetching bookings for user ID: ${req.user.id}`);
         
-        
-        const { isSignatureValid } = require('../utils/payments');
-        if (isSignatureValid(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
-            booking.paymentDetails.razorpayPaymentId = razorpay_payment_id;
-            booking.paymentDetails.paymentStatus = 'Completed';
-            booking.status = 'Confirmed';
-            await booking.save();
-            
-            
-            const io = req.app.get('io');
-            io.to(booking.guru.toString()).emit('new_booking', booking);
+        const bookings = await Booking.find({ shishya: req.user.id })
+            .populate('guru', 'name avatar') // Guru ki details laayein
+            .populate('skill', 'title');   // Skill ki details laayein
 
-            res.status(200).json({ message: 'Payment successful and booking confirmed' });
-        } else {
-            res.status(400).json({ message: 'Invalid payment signature' });
+        if (!bookings) {
+            console.log("No bookings found for this user in database.");
+            return res.status(200).json([]);
         }
+
+        console.log(`Found ${bookings.length} booking(s) for the user.`);
+        // --- END DEBUGGING ---
+
+        res.status(200).json(bookings);
     } catch (error) {
+        console.error("Error fetching my bookings:", error);
         next(error);
     }
 };
-
-
-exports.getMyBookings = async (req, res, next) => {
+exports.getGuruBookings = async (req, res, next) => {
     try {
-        const bookings = await Booking.find({ shishya: req.user.id }).populate('guru skill');
+        // Step 1: Logged-in Guru ki ID nikalein
+        const guruId = req.user.id;
+
+        // Step 2: Database mein woh saari bookings dhoondhein jahan 'guru' field
+        // logged-in Guru ki ID se match karti ho
+        const bookings = await Booking.find({ guru: guruId })
+            .populate('shishya', 'name avatar') // Har booking ke saath Shishya ka naam aur avatar bhi le aayein
+            .populate('skill', 'title')       // Aur skill ka title bhi le aayein
+            .sort({ createdAt: -1 });         // Sabse nayi booking sabse upar
+
         res.status(200).json(bookings);
     } catch (error) {
+        console.error("Error fetching Guru's bookings:", error);
         next(error);
     }
 };

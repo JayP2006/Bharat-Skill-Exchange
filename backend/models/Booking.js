@@ -17,6 +17,7 @@ const BookingSchema = new mongoose.Schema({
     razorpayOrderId: String,
     razorpayPaymentId: String,
     paymentStatus: { type: String, default: 'Pending' },
+    
   },
 }, { timestamps: true });
 

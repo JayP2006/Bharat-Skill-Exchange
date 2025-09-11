@@ -12,61 +12,25 @@ const PaymentForm = ({ skill }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handlePayment = async () => {
+  // Function ka naam badal kar handleDirectBooking kar dete hain
+  const handleDirectBooking = async () => {
     setLoading(true);
-
     try {
-      // Step 1: Create a booking on the backend to get a Razorpay order ID
+      // Step 1: Booking ki details taiyaar karein
       const bookingDetails = {
         guru: skill.guru._id,
         skill: skill._id,
-        // These are placeholders, a real app would have a scheduler
         startTime: new Date().toISOString(),
         endTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         totalAmount: skill.hourlyRate,
       };
       
-      const { data: bookingResponse } = await api.post('/bookings', bookingDetails);
-      const { booking, razorpayOrderId, amount, razorpayKeyId } = bookingResponse;
-
-      // Step 2: Open Razorpay Checkout
-      const options = {
-        key: razorpayKeyId,
-        amount: amount,
-        currency: "INR",
-        name: "BharatSkill Connect",
-        description: `Booking for ${skill.title}`,
-        image: "/logo.svg", // Your logo
-        order_id: razorpayOrderId,
-        handler: async function (response) {
-          // Step 3: Verify the payment on the backend
-          try {
-            const verificationData = {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            };
-            await api.post(`/bookings/verify-payment/${booking._id}`, verificationData);
-            toast.success("Payment successful! Your booking is confirmed.");
-            navigate('/profile'); // Redirect to profile/dashboard
-          } catch (verifyError) {
-            toast.error("Payment verification failed. Please contact support.");
-          }
-        },
-        prefill: {
-          name: user.name,
-          email: user.email,
-        },
-        theme: {
-          color: "#4F46E5",
-        },
-      };
+      // Step 2: Backend ko seedha booking create karne ke liye request bhejein
+      await api.post('/bookings', bookingDetails);
       
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response) {
-        toast.error(`Payment failed: ${response.error.description}`);
-      });
-      rzp.open();
+      // Step 3: Success ka message dikhayein aur user ko redirect karein
+      toast.success("Booking confirmed successfully!");
+      navigate('/profile'); // User ko uske profile/dashboard par bhej dein
 
     } catch (error) {
       toast.error(error.response?.data?.message || "Booking failed. Please try again.");
@@ -88,9 +52,10 @@ const PaymentForm = ({ skill }) => {
             <IndianRupee className="h-6 w-6" /> {skill.hourlyRate}
           </span>
         </div>
-        <Button onClick={handlePayment} className="w-full" size="lg" disabled={loading}>
+        {/* Button ab handleDirectBooking ko call karega */}
+        <Button onClick={handleDirectBooking} className="w-full" size="lg" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? 'Processing...' : 'Proceed to Pay'}
+          {loading ? 'Booking...' : 'Confirm & Book Now'}
         </Button>
       </CardContent>
     </Card>

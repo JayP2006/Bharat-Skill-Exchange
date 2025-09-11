@@ -16,6 +16,7 @@ import Booking from '@/pages/Booking';
 import ChatPage from '@/pages/ChatPage';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -38,7 +39,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/skills" element={<SkillSearch />} />
-            
+             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
             <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
