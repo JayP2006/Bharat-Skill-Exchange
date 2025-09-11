@@ -12,12 +12,13 @@ const messageRoutes = require('./routes/messageRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const workshopRoutes = require('./routes/workshopRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
 }));
 app.use(helmet());
@@ -37,7 +38,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/workshops', workshopRoutes);
 app.use('/api/certificates', certificateRoutes);
 
-
+app.use('/api/users', userRoutes);
 app.use(errorHandler);
 
 module.exports = app;
