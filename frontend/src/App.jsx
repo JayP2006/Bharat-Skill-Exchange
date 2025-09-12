@@ -17,41 +17,48 @@ import ChatPage from '@/pages/ChatPage';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
 import Dashboard from './pages/Dashboard';
+import MyWorkshops from './pages/MyWorkshops';
+import { ThemeProvider } from './context/themeContext.jsx';
+import WorkshopCard from './components/Workshops/WorkshopCard.jsx';
+import WorkshopForm from './components/Workshops/WorkshopForm.jsx';
 
 function App() {
   const { loadUser } = useAuthStore();
   const location = useLocation();
 
-  useSocket(); // Initialize Socket connection
-  
+  useSocket();
+
   useEffect(() => {
     loadUser();
   }, [loadUser]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
-      <Toaster position="top-center" reverseOrder={false} />
-      <Navbar />
-      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/skills" element={<SkillSearch />} />
-             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
-            <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-            <Route path="/chat/:userId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AnimatePresence>
-      </main>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
+        <Toaster position="top-center" reverseOrder={false} />
+        <Navbar />
+        <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/skills" element={<SkillSearch />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+              <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+              <Route path="/chat/:userId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/my-workshops" element={<ProtectedRoute><WorkshopCard /></ProtectedRoute>} />
+              <Route path="/Add-workshops" element={<ProtectedRoute><WorkshopForm /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AnimatePresence>
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 }
 

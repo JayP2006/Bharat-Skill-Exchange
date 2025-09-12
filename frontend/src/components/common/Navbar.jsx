@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '@/store/authStore';
-import { LogOut, User, LayoutDashboard, MessageSquare, Bell, Sun, Moon, Sparkles } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, Bell, Sun, Moon, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
@@ -12,36 +12,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { useTheme } from '@/context/themeContext.jsx';
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const getInitials = (name = '') => name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    // Note: Dark mode logic will require Tailwind's 'class' strategy
-    document.documentElement.classList.toggle('dark', !darkMode);
-  };
 
-  // ✅ Dynamically set navigation links only if the user is logged in
+  // ✅ Dynamically set navigation links based on user role
   let navLinks = [];
   if (user) {
     if (user.role === 'Guru') {
-        navLinks = [
-            { name: 'Dashboard', path: '/dashboard' },
-            { name: 'My Profile', path: '/profile' },
-            { name: 'Messages', path: '/chat' },
-        ];
-    } else { // For Shishya
-        navLinks = [
-            { name: 'Learn Skills', path: '/skills' },
-            { name: 'Courses', path: '/courses' },
-            { name: 'Chat with Gurus', path: '/chat' },
-        ];
+      navLinks = [
+        { name: 'Dashboard', path: '/dashboard' },
+        { name: 'My Profile', path: '/profile' },
+        { name: 'Messages', path: '/chat' },
+      ];
+    } else { // Shishya
+      navLinks = [
+        { name: 'Learn Skills', path: '/skills' },
+        { name: 'Courses', path: '/courses' },
+        { name: 'Chat with Gurus', path: '/chat' },
+      ];
     }
   }
 
@@ -50,13 +46,13 @@ const Navbar = () => {
       <div className="container flex h-16 items-center">
         {/* Logo */}
         <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
-              <span className="font-bold text-lg hidden sm:inline-block">BharatSkill</span>
-            </Link>
+          <Link to="/" className="flex items-center space-x-2">
+            <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+            <span className="font-bold text-lg hidden sm:inline-block">BharatSkill</span>
+          </Link>
         </div>
 
-        {/* Desktop Nav or Logged Out Statement */}
+        {/* Desktop Nav / Logged out statement */}
         <div className="flex-grow flex justify-center">
           {user ? (
             <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
@@ -77,30 +73,34 @@ const Navbar = () => {
               ))}
             </nav>
           ) : (
-            // ✅ Statement for logged-out users on desktop
             <div className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground animate-fade-in">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>A Platform to Connect, Learn, and Grow</span>
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span>A Platform to Connect, Learn, and Grow</span>
             </div>
           )}
         </div>
 
         {/* Right Side */}
         <div className="flex-shrink-0 flex items-center space-x-2 sm:space-x-4">
-          {/* Dark Mode */}
+          {/* Dark Mode Toggle */}
           <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="hover:scale-110 transition-transform duration-300">
             {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
           {/* Notifications */}
           {user && (
-            <Button variant="ghost" size="icon" onClick={() => navigate('/notifications')} className="relative hover:scale-110 transition-transform duration-300">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/notifications')}
+              className="relative hover:scale-110 transition-transform duration-300"
+            >
               <Bell className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 inline-flex h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-background"></span>
             </Button>
           )}
 
-          {/* Auth Dropdown or Login/Signup Buttons */}
+          {/* Auth Dropdown or Login/Signup */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -111,11 +111,7 @@ const Navbar = () => {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-60 animate-slide-up-fade rounded-lg shadow-lg border bg-background"
-                align="end"
-                forceMount
-              >
+              <DropdownMenuContent className="w-60 animate-slide-up-fade rounded-lg shadow-lg border bg-background" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user.name}</p>
@@ -131,7 +127,7 @@ const Navbar = () => {
                     <LayoutDashboard className="mr-2 h-4 w-4" /> Admin
                   </DropdownMenuItem>
                 )}
-                 {user.role === 'Guru' && (
+                {user.role === 'Guru' && (
                   <DropdownMenuItem className="focus:bg-primary/10 transition-all" onClick={() => navigate('/dashboard')}>
                     <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
                   </DropdownMenuItem>
@@ -144,7 +140,7 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="hidden md:flex items-center space-x-2">
-              <Button className="hover:scale-105 transition-transform duration-300" variant="ghost" onClick={() => navigate('/login')}>
+              <Button variant="ghost" className="hover:scale-105 transition-transform duration-300" onClick={() => navigate('/login')}>
                 Login
               </Button>
               <Button className="hover:scale-105 transition-transform duration-300" onClick={() => navigate('/signup')}>
@@ -173,7 +169,6 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-background border-t animate-slide-down-fade">
           <nav className="flex flex-col space-y-2 p-4">
-            {/* ✅ Show links only if user is logged in */}
             {user && navLinks.map(link => (
               <Link
                 key={link.name}
@@ -184,7 +179,6 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            {/* Show Login/Signup only if user is logged out */}
             {!user && (
               <div className="flex flex-col space-y-2 pt-4 border-t">
                 <Button variant="ghost" className="w-full text-lg" onClick={() => {navigate('/login'); setMobileMenuOpen(false);}}>
@@ -203,4 +197,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

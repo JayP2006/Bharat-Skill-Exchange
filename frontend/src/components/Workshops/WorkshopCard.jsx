@@ -1,56 +1,113 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Calendar, Clock, Users, IndianRupee } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import api from "@/utils/api";
+import { Loader2, Calendar, Clock, BookOpen, PlayCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
-const WorkshopCard = ({ workshop }) => {
-  const navigate = useNavigate();
-  const workshopDate = new Date(workshop.dateTime);
+const MyWorkshops = ({ userRole }) => {
+  const [workshops, setWorkshops] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // URL se skillId nikalna
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const skillId = params.get("skillId");
+
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        let res;
+        if (true) {
+          if (!skillId) {
+            setLoading(false);
+            return;
+          }
+          res = await api.get(`/workshops/skill/${skillId}`);
+        } else {
+          res = await api.get("/workshops/student");
+        }
+        setWorkshops(res.data);
+      } catch (err) {
+        console.error("ERROR FETCHING WORKSHOPS: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkshops();
+  }, [skillId, userRole]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (workshops.length === 0) {
+    return <p className="text-center py-10 text-muted-foreground">No workshops found.</p>;
+  }
 
   return (
-    <motion.div
-      whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)" }}
-      className="h-full"
-    >
-      <Card className="overflow-hidden h-full flex flex-col">
-        <CardHeader>
-          <CardTitle>{workshop.title}</CardTitle>
-          <CardDescription>Hosted by {workshop.guru.name}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-grow space-y-3">
-          <p className="text-sm text-muted-foreground line-clamp-3">{workshop.description}</p>
-          <div className="text-sm text-foreground space-y-2">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" />
-              <span>{workshopDate.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" />
-              <span>{workshopDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} ({workshop.durationMinutes} mins)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" />
-              <span>{workshop.seatsBooked} / {workshop.seatLimit} seats booked</span>
-            </div>
+  <div className="space-y-6">
+    {/* Section Title */}
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+      Workshops
+    </h2>
+
+    {/* Workshops Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {workshops.map((ws) => (
+        <div
+          key={ws._id}
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 hover:shadow-md transition p-6 flex flex-col justify-between"
+        >
+          {/* Title */}
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-primary" />
+            {ws.title}
+          </h3>
+
+          {/* Skill */}
+          <p className="mt-2 text-sm text-muted-foreground">
+            Skill: <span className="font-medium">{ws.skill?.title}</span>
+          </p>
+
+          {/* Date & Duration */}
+          <div className="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+            <p className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              {new Date(ws.dateTime).toLocaleDateString()}
+            </p>
+            <p className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              {new Date(ws.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} 
+              {" • "} {ws.durationMinutes} mins
+            </p>
           </div>
-        </CardContent>
-        <CardFooter className="flex items-center justify-between bg-muted/50 p-4">
-          <div className="flex items-center font-bold text-lg">
-            <IndianRupee className="w-5 h-5" />
-            <span>{workshop.price}</span>
+
+          {/* Actions */}
+          <div className="mt-4">
+            {ws.liveLink ? (
+              <a
+                href={ws.liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 w-full justify-center rounded-lg bg-primary px-4 py-2 text-white text-sm font-medium hover:bg-primary/90 transition"
+              >
+                <PlayCircle className="h-4 w-4" /> Join Live
+              </a>
+            ) : ws.videoUrl ? (
+              <video src={ws.videoUrl} controls className="mt-2 w-full rounded-lg shadow-sm" />
+            ) : (
+              <p className="text-xs text-muted-foreground italic">No live or recorded content</p>
+            )}
           </div>
-          <Button 
-            onClick={() => navigate(`/booking/workshop/${workshop._id}`)}
-            disabled={workshop.seatsBooked >= workshop.seatLimit}
-          >
-            {workshop.seatsBooked >= workshop.seatLimit ? 'Sold Out' : 'Book a Seat'}
-          </Button>
-        </CardFooter>
-      </Card>
-    </motion.div>
-  );
+        </div>
+      ))}
+    </div>
+  </div>
+); 
 };
 
-export default WorkshopCard;
+export default MyWorkshops;

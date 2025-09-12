@@ -42,3 +42,28 @@
 
 }
 
+@layer base {
+  .dark {
+    --background: 220 13% 18%;          /* dark main bg */
+    --foreground: 210 20% 96%;          /* main text */
+    --card: 220 13% 24%;                 /* card bg */
+    --card-foreground: 210 20% 96%;      /* card text */
+    --popover: 220 13% 28%;              /* dropdown/popover bg */
+    --popover-foreground: 210 20% 96%;   /* dropdown text */
+    --primary: 243.8 91.4% 58.2%;        /* accent color */
+    --primary-foreground: 0 0% 98%;      /* primary text */
+    --secondary: 210 40% 24%;            /* secondary items */
+    --secondary-foreground: 210 20% 96%;
+    --muted: 220 13% 36%;                /* muted cards / borders */
+    --muted-foreground: 210 20% 96%;
+    --accent: 210 40% 28%;               /* hover bg for buttons */
+    --accent-foreground: 210 20% 96%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 36%;               /* subtle border */
+    --input: 220 13% 28%;                /* input background */
+    --ring: 243.8 91.4% 58.2%;           /* focus ring */
+    --shadow-color: 0 0% 0% / 0.5;       /* shadows slightly lighter */
+    --radius: 0.5rem;
+  }
+}
