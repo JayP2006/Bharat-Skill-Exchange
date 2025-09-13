@@ -66,19 +66,29 @@ const BookingCard = ({ booking, role }) => {
   const isPending = booking.status === 'Pending';
   const otherUser = role === 'Guru' ? booking.shishya : booking.guru;
 
+  const handleClick = () => {
+    if (role === 'Shishya') {
+      // Shishya ke liye MyWorkshops page pe redirect with skillId
+      navigate(`/my-workshops?skillId=${booking.skill._id}`);
+    } else {
+      // Guru ke liye abhi jaise hai booking page
+      navigate(`/booking/${booking.skill._id}`);
+    }
+  };
+
   return (
     <button 
-      onClick={() => navigate(`/booking/${booking.skill._id}`)}
+      onClick={handleClick}
       className="w-full text-left transition-all duration-300 rounded-lg hover:bg-muted/80 hover-lift"
     >
       <div className="flex items-center p-4 gap-4 w-full">
         <Avatar className="h-12 w-12 border-2 border-border">
-          <AvatarImage src={otherUser.avatar} alt={otherUser.name} />
-          <AvatarFallback className="text-lg">{otherUser.name.charAt(0)}</AvatarFallback>
+          <AvatarImage src={otherUser?.avatar} alt={otherUser?.name} />
+          <AvatarFallback className="text-lg">{otherUser?.name?.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="flex-grow space-y-0.5">
           <p className="font-semibold">{booking.skill.title}</p>
-          <p className="text-sm text-muted-foreground">{role === 'Guru' ? `with ${otherUser.name}` : `by ${otherUser.name}`}</p>
+          <p className="text-sm text-muted-foreground">{role === 'Guru' ? `with ${otherUser?.name}` : `by ${otherUser?.name}`}</p>
         </div>
         <div className="text-right flex-shrink-0">
           <div className={`flex items-center justify-end gap-1.5 text-xs font-semibold ${isPending ? 'text-orange-400' : 'text-green-400'}`}>
@@ -93,6 +103,7 @@ const BookingCard = ({ booking, role }) => {
     </button>
   );
 };
+
 
 // --- Main Profile Page Component ---
 
