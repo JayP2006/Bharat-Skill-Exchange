@@ -21,6 +21,8 @@ import MyWorkshops from './pages/MyWorkshops';
 import { ThemeProvider } from './context/themeContext.jsx';
 import WorkshopCard from './components/Workshops/WorkshopCard.jsx';
 import WorkshopForm from './components/Workshops/WorkshopForm.jsx';
+import PageLayout from './components/common/PageLayout';
+import EditWorkshopModal from './components/Workshops/EditWorkshopModal.jsx';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -31,27 +33,38 @@ function App() {
   useEffect(() => {
     loadUser();
   }, [loadUser]);
-
-  return (
+ 
+     return (
     <ThemeProvider>
       <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
         <Toaster position="top-center" reverseOrder={false} />
         <Navbar />
-        <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 👈 2. Yahaan se container classes hata dein */}
+        <main className="flex-grow">
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
+              {/* === Full-Width Page Route === */}
+              {/* Is route par layout apply nahi hoga */}
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/skills" element={<SkillSearch />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
-              <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-              <Route path="/chat/:userId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-              <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/my-workshops" element={<ProtectedRoute><WorkshopCard /></ProtectedRoute>} />
-              <Route path="/Add-workshops" element={<ProtectedRoute><WorkshopForm /></ProtectedRoute>} />
+
+              {/* === Standard Container Page Routes === */}
+              {/* Yeh saare routes PageLayout ke andar render honge */}
+              <Route element={<PageLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/skills" element={<SkillSearch />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+                <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+                <Route path="/chat/:userId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/my-workshops" element={<ProtectedRoute><WorkshopCard /></ProtectedRoute>} />
+                <Route path="/Add-workshops" element={<ProtectedRoute><WorkshopForm /></ProtectedRoute>} />
+                <Route path="/edit-workshop" element={<ProtectedRoute><EditWorkshopModal/></ProtectedRoute>}/>
+              </Route>
+
+              {/* NotFound Route (Layout ke bahar rakhein ya andar, aapki choice hai) */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AnimatePresence>

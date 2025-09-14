@@ -17,9 +17,9 @@ const Footer = () => {
       <div className="container flex flex-col gap-10 md:flex-row md:justify-between md:items-start">
         {/* Logo and Description */}
         <div className="flex flex-col items-center md:items-start gap-4">
-          <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
+          <img src="/logo1.png" alt="Logo" className="h-8 w-8" />
           <p className="text-center md:text-left text-sm leading-relaxed">
-            Built for Hackathon. © {new Date().getFullYear()} BharatSkill Connect. All rights reserved.
+            Built for Hackathon. © {new Date().getFullYear()} ShikshaMudra Connect. All rights reserved.
           </p>
 
           {/* Social Icons */}
@@ -99,7 +99,7 @@ const Footer = () => {
 
       {/* Bottom */}
       <div className="mt-10 border-t border-muted-foreground/20 pt-4 text-center text-xs text-muted-foreground">
-        Made with ❤️ by BharatSkill Connect Team
+        Made with ❤️ by ShikshaMudra Connect Team
       </div>
     </footer>
   );

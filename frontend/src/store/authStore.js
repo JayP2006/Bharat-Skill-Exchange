@@ -13,6 +13,7 @@ const useAuthStore = create((set, get) => ({
     try {
       const { data } = await api.post('/auth/login', { email, password });
       localStorage.setItem('token', data.token);
+      localStorage.setItem('role',data.role);
       set({ token: data.token });
       await get().loadUser();
       toast.success('Successfully logged in!');

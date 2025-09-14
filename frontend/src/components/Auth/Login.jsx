@@ -20,6 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await login(formData.email, formData.password);
+    console.log(success)
     if (success) {
       navigate(from, { replace: true });
     }

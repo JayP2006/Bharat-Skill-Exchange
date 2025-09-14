@@ -47,9 +47,9 @@ const Booking = () => {
                     <CardContent className="p-0">
                         <img src={skill.media?.[0] || `https://placehold.co/800x400/6366f1/FFFFFF?text=${skill.title}`} alt={skill.title} className="w-full h-64 object-cover rounded-t-lg"/>
                         <div className="p-6 space-y-4">
-                            <h1 className="text-4xl font-bold">{skill.title}</h1>
+                            <h1 className="text-4xl font-bold">{skill?.title}</h1>
                             <div className="flex items-center gap-4">
-                                <Avatar className="h-12 w-12"><AvatarImage src={skill.guru.avatar} alt={skill.guru.name} /><AvatarFallback>{getInitials(skill.guru.name)}</AvatarFallback></Avatar>
+                                <Avatar className="h-12 w-12"><AvatarImage src={skill?.guru?.avatar} alt={skill?.guru?.name} /><AvatarFallback>{getInitials(skill?.guru?.name)}</AvatarFallback></Avatar>
                                 <div><p className="font-semibold">{skill.guru.name}</p><p className="text-sm text-muted-foreground">Guru</p></div>
                                 <div className="flex items-center gap-1 font-semibold text-amber-500 ml-auto"><Star className="w-5 h-5 fill-current" /><span>{skill.averageRating?.toFixed(1) || 'New'}</span></div>
                             </div>
