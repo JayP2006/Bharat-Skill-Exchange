@@ -13,7 +13,7 @@ const useSocketStore = create((set) => ({
       return;
     }
 
-    const newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+    const newSocket = io('https://shikshamudra.onrender.com');
     set({ socket: newSocket });
 
     newSocket.on('connect', () => {
