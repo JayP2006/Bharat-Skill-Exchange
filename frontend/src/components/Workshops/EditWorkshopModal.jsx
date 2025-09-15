@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { Loader2 } from "lucide-react";
 
 const EditWorkshopModal = ({ isOpen, onClose, workshop, onWorkshopUpdate }) => {
