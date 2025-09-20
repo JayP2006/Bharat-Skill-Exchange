@@ -3,13 +3,14 @@ import api from "@/utils/api";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { Loader2, Calendar, Clock, BookOpen, PlayCircle, MoreVertical, FilePenLine, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
-// Ensure the file is exactly EditWorkshopModal.js
-import EditWorkshopModal from "./EditWorkshopModal";
+// Assuming EditWorkshopModal is in the same folder or a subfolder
+import EditWorkshopModal from "./EditWorkshopModal"; 
 
-// Ensure the file is exactly DropdownMenu.js
+// Corrected import path for dropdown-menu (usually lowercase)
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,16 +18,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
+
 const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
 const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } } };
 
+// Renamed component from MyWorkshops to WorkshopCard
 const WorkshopCard = () => {
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
-
+  
   const role = localStorage.getItem("role");
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -38,7 +41,7 @@ const WorkshopCard = () => {
         let res;
         if (skillId) {
           res = await api.get(`/workshops/skill/${skillId}`);
-        } else if (role?.toLowerCase() === 'guru') {
+        } else if (role === 'guru') {
           res = await api.get("/workshops/my-workshops");
         } else {
           res = await api.get("/workshops/student");
@@ -61,7 +64,7 @@ const WorkshopCard = () => {
 
   const handleWorkshopUpdate = (updatedWorkshop) => {
     setWorkshops(currentWorkshops =>
-      currentWorkshops.map(ws =>
+      currentWorkshops.map(ws => 
         ws._id === updatedWorkshop._id ? updatedWorkshop : ws
       )
     );
@@ -115,7 +118,7 @@ const WorkshopCard = () => {
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               className="relative bg-card rounded-2xl shadow-sm border border-border p-6 flex flex-col justify-between transform-gpu"
             >
-              {role?.toLowerCase() === 'guru' && (
+              {role === 'Guru' && (
                 <div className="absolute top-4 right-4 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -136,7 +139,7 @@ const WorkshopCard = () => {
                   </DropdownMenu>
                 </div>
               )}
-
+              
               <div className="flex flex-col flex-grow">
                 <h3 className="text-xl font-semibold text-card-foreground flex items-center gap-2 pr-10">
                   <BookOpen className="h-5 w-5 text-primary flex-shrink-0" />
