@@ -41,7 +41,7 @@ const WorkshopCard = () => {
         let res;
         if (skillId) {
           res = await api.get(`/workshops/skill/${skillId}`);
-        } else if (role === 'guru') {
+        } else if (role === 'Guru') {
           res = await api.get("/workshops/my-workshops");
         } else {
           res = await api.get("/workshops/student");
