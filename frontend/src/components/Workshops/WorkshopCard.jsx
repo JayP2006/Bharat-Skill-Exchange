@@ -3,7 +3,7 @@ import api from "@/utils/api";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { Loader2, Calendar, Clock, BookOpen, PlayCircle, MoreVertical, FilePenLine, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import toast from "react-hot-toast";
 
 // Assuming EditWorkshopModal is in the same folder or a subfolder
@@ -41,7 +41,7 @@ const WorkshopCard = () => {
         let res;
         if (skillId) {
           res = await api.get(`/workshops/skill/${skillId}`);
-        } else if (role === 'guru') {
+        } else if (role === 'Guru') {
           res = await api.get("/workshops/my-workshops");
         } else {
           res = await api.get("/workshops/student");
