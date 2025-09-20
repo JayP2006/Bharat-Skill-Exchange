@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { 
   BookOpen, 
