@@ -1,10 +1,10 @@
 # 🌐 ShikshaMudra – A Hyperlocal P2P Skill Exchange Platform  
 
-![GitHub stars](https://img.shields.io/github/stars/your-username/ShikshaMudra?style=social)  
-![GitHub forks](https://img.shields.io/github/forks/your-username/ShikshaMudra?style=social)  
-![GitHub issues](https://img.shields.io/github/issues/your-username/ShikshaMudra)  
-![GitHub license](https://img.shields.io/github/license/your-username/ShikshaMudra)  
-![Contributors](https://img.shields.io/github/contributors/your-username/ShikshaMudra)  
+![GitHub stars](https://img.shields.io/github/stars/JayP2006/Bharat-Skill-Exchange?style=social)  
+![GitHub forks](https://img.shields.io/github/forks/JayP2006/Bharat-Skill-Exchange?style=social)  
+![GitHub issues](https://img.shields.io/github/issues/JayP2006/Bharat-Skill-Exchange)  
+![GitHub license](https://img.shields.io/github/license/JayP2006/Bharat-Skill-Exchange)  
+![Contributors](https://img.shields.io/github/contributors/JayP2006/Bharat-Skill-Exchange)  
 
 > **ShikshaMudra** is a full-stack **MERN application** built as a **hyperlocal, peer-to-peer skill exchange platform**.  
 > It connects **Gurus (experts/teachers)** with **Shishyas (learners)**, fostering community-driven knowledge sharing through **location-based discovery, booking, and real-time communication**.  
@@ -86,5 +86,5 @@
 
 ### 1️⃣ Clone the Repo  
 ```bash
-git clone https://github.com/your-username/ShikshaMudra.git
-cd ShikshaMudra
+git clone https://github.com/JayP2006/Bharat-Skill-Exchange.git
+cd Bharat-Skill-Exchange
