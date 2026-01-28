@@ -7,7 +7,7 @@ let onlineUsers = new Map();
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:8080',
+      origin: process.env.CLIENT_URL || 'https://shiksha-mudraa.onrender.com',
       methods: ['GET', 'POST'],
     },
   });
