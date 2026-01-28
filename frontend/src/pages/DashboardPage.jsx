@@ -10,17 +10,16 @@ import {
   Link as LinkIcon,
   Pencil,
   MessageSquare,
-  Star,
-  CheckCircle
+  Star
 } from 'lucide-react';
 import Layout from '../components/layout/Layout.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
-import ReviewForm from '../components/reviews/ReviewForm.jsx'; // ✅ Import Review Form
+import ReviewForm from '../components/reviews/ReviewForm.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { bookingService } from '../services/bookingService.js';
 import { skillService } from '../services/skillService.js';
 import { userService } from '../services/userService.js';
-import { certificateService } from '../services/certificateService.js'; // ✅ Import Cert Service
+import { certificateService } from '../services/certificateService.js';
 import api from '../config/api.js';
 
 const DashboardPage = () => {
@@ -50,29 +49,41 @@ const DashboardPage = () => {
           ? bookingService.getBookingRequests()
           : bookingService.getMyBookings();
 
+        // Base promises
         const promises = [
           userService.getUserStats().catch(() => ({})),
           bookingPromise.catch(() => ({ bookings: [] })),
         ];
 
+        // 🔥 FIX: Fetch extra data based on role
         if (isGuru) {
-          promises.push(
-            skillService.getMySkills().catch(() => ({ skills: [] }))
-          );
+          // If Guru, fetch Skills
+          promises.push(skillService.getMySkills().catch(() => ({ skills: [] })));
+        } else {
+          // 🔥 IF LEARNER: Fetch Certificates to get the accurate count
+          promises.push(certificateService.getMyCertificates().catch(() => ({ certificates: [] })));
         }
 
-        const [statsData, bookingsData, skillsData] = await Promise.all(promises);
+        const [statsData, bookingsData, extraData] = await Promise.all(promises);
 
-        setStats(statsData);
-
+        // Process Bookings
         const bookingList =
           bookingsData.bookings ||
           (Array.isArray(bookingsData) ? bookingsData : []);
         setBookings(bookingList);
 
-        if (skillsData) {
-          setMySkills(skillsData.skills || []);
+        // Process Role Specific Data
+        if (isGuru) {
+          setMySkills(extraData?.skills || []);
+        } else {
+          // 🔥 Manually update certificate count in stats
+          if (extraData?.certificates) {
+            statsData.certificates = extraData.certificates.length;
+          }
         }
+
+        setStats(statsData);
+
       } catch (err) {
         console.error('Dashboard fetch failed:', err);
       } finally {
@@ -83,7 +94,7 @@ const DashboardPage = () => {
     fetchData();
   }, [isGuru]);
 
-  // 🔥 CALCULATE COMPLETED SESSIONS COUNT
+  // CALCULATE COMPLETED SESSIONS COUNT
   const completedCount = bookings.filter((b) => b.status === 'COMPLETED').length;
 
   // UPCOMING SESSION
@@ -168,7 +179,7 @@ const DashboardPage = () => {
     return now >= sessionTime - 10 * 60 * 1000;
   };
 
-  // 🔥 NEW: ISSUE CERTIFICATE HANDLER (For Gurus)
+  // ISSUE CERTIFICATE HANDLER
   const handleIssueCertificate = async (bookingId, learnerName) => {
     if (!window.confirm(`Issue certificate to ${learnerName}?`)) return;
     try {
@@ -217,7 +228,7 @@ const DashboardPage = () => {
     statCards.push({
       icon: Award,
       label: 'Certificates Earned',
-      value: stats?.certificates || 0,
+      value: stats?.certificates || 0, // 🔥 NOW THIS WILL SHOW CORRECT COUNT
       color: 'text-warning',
     });
   }
@@ -369,11 +380,8 @@ const DashboardPage = () => {
                   <div className="flex items-center gap-2">
                     <span className={badge.className}>{badge.label}</span>
                     
-                    {/* 🔥 ACTIONS FOR COMPLETED SESSIONS */}
                     {b.status === 'COMPLETED' && (
                       <div className="flex items-center gap-2 ml-2 border-l pl-2 border-border/50">
-                        
-                        {/* 1. Guru Action: Issue Certificate */}
                         {isGuru && (
                           <button
                             onClick={() => handleIssueCertificate(b._id, b.learner?.name)}
@@ -384,7 +392,6 @@ const DashboardPage = () => {
                           </button>
                         )}
 
-                        {/* 2. Learner Action: Write Review */}
                         {!isGuru && (
                           <button
                             onClick={() => {
@@ -400,7 +407,6 @@ const DashboardPage = () => {
                       </div>
                     )}
 
-                    {/* 3. Common Action: Message */}
                     {otherUser?._id && (
                        <button
                          onClick={() => navigate(`/messages?user=${otherUser._id}`)}
@@ -421,7 +427,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* 🔥 REVIEW MODAL (ONLY FOR LEARNERS) */}
+      {/* REVIEW MODAL */}
       {showReviewModal && selectedBookingForReview && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in">
           <div className="bg-background rounded-xl p-6 w-full max-w-md relative shadow-2xl">
