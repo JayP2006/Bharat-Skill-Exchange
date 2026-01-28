@@ -9,7 +9,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { userService } from '../services/userService.js';
 import { reviewService } from '../services/reviewService.js';
-import ReviewCard from '../components/reviews/ReviewCard.jsx';
+import ReviewCard from '../components/reviews/ReviewCardd.jsx';
 import api from '../config/api';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

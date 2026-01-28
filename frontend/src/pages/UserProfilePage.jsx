@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { User, Mail, MapPin, Briefcase, Star, MessageSquare } from 'lucide-react';
 import Layout from '../components/layout/Layout.jsx';
 import SkillCard from '../components/skills/SkillItem.jsx';
-import ReviewCard from '../components/reviews/ReviewCard.jsx';
+import ReviewCard from '../components/reviews/ReviewCardd.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import ErrorMessage from '../components/ui/ErrorMessage.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
