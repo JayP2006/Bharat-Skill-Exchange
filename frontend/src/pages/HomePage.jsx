@@ -12,8 +12,8 @@ import {
   BookOpen,
   Globe
 } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import SkillCard from '../components/skills/SkillCard.jsx';
+import Layout from '../components/layout/Layout.jsx';
+import SkillCard from '../components/skills/SkillItem.jsx';
 import { skillService } from '../services/skillService.js';
 
 const HomePage = () => {

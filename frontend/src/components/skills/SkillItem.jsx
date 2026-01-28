@@ -113,4 +113,4 @@ const SkillCard = ({ skill }) => {
   );
 };
 
-export default SkillCard;
+export default SkillItem;
