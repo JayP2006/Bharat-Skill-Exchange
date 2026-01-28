@@ -3,7 +3,10 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const app = require('./app');
 const initializeSocket = require('./utils/socket');
+const initCronJobs = require('./utils/cronJobs');
 
+
+initCronJobs(); 
 
 dotenv.config();
 

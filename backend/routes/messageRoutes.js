@@ -1,8 +1,18 @@
 const express = require('express');
-const { getMessages } = require('../controllers/messageController');
+const { 
+  sendMessage, 
+  getMessages, 
+  getConversations, 
+  markAsRead 
+} = require('../controllers/messageController');
 const { protect } = require('../middlewares/auth');
+
 const router = express.Router();
 
+// Order matters! Specific routes before parameters.
+router.get('/conversations', protect, getConversations);
+router.post('/', protect, sendMessage);
 router.get('/:receiverId', protect, getMessages);
+router.put('/:senderId/read', protect, markAsRead);
 
 module.exports = router;

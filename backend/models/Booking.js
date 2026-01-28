@@ -1,24 +1,51 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const BookingSchema = new mongoose.Schema({
-  shishya: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
-  guru: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
-  skill: { type: mongoose.Schema.ObjectId, ref: 'Skill', required: true },
-  workshop: { type: mongoose.Schema.ObjectId, ref: 'Workshop' }, // Optional
-  startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
-  totalAmount: { type: Number, required: true },
-  status: {
-    type: String,
-    enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],
-    default: 'Pending',
-  },
-  paymentDetails: {
-    razorpayOrderId: String,
-    razorpayPaymentId: String,
-    paymentStatus: { type: String, default: 'Pending' },
-    
-  },
-}, { timestamps: true });
+const bookingSchema = new mongoose.Schema(
+  {
+    learner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    guru: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    skill: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Skill",
+      required: true,
+    },
 
-module.exports = mongoose.model('Booking', BookingSchema);
+    status: {
+      type: String,
+      enum: [
+        "REQUESTED",
+        "ACCEPTED",
+        "SCHEDULED",
+        "COMPLETED",
+        "REVIEWED",
+        "CANCELLED",
+      ],
+      default: "REQUESTED",
+    },
+    autoAccepted: {
+  type: Boolean,
+  default: false,
+},
+
+priorityScore: {
+  type: Number,
+  default: 0,
+},
+
+    scheduledAt: Date,
+    durationInMinutes: Number,
+
+    cancelReason: String,
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Booking", bookingSchema);

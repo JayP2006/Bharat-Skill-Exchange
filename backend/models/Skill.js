@@ -1,27 +1,75 @@
 const mongoose = require('mongoose');
 
-const SkillSchema = new mongoose.Schema({
-  guru: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  tags: [String],
-  hourlyRate: { type: Number, required: true },
-  mode: { type: String, enum: ['Online', 'Offline'], default: 'Online' },
-  media: [{ type: String }], 
-  location: {
-    type: {
+const skillSchema = new mongoose.Schema(
+  {
+    guru: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    title: {
       type: String,
-      enum: ['Point'],
+      required: true,
     },
-    coordinates: {
-      type: [Number], 
+
+    description: {
+      type: String,
+      required: true,
     },
-    address: String,
+
+    category: {
+      type: String,
+      required: true,
+    },
+
+    level: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      required: true,
+    },
+
+    duration: {
+      type: String,
+      required: true,
+    },
+
+    topics: [String],
+
+    requirements: String,
+
+    hourlyRate: {
+      type: Number,
+      default: 0,
+    },
+
+    mode: {
+      type: String,
+      enum: ["Online", "Offline"],
+      required: false,
+    },
+
+    media: [String],
+
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+      },
+    },
+
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
   },
-  averageRating: { type: Number, default: 0 },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
+// 🔥 Geo index (SAFE)
+skillSchema.index({ location: "2dsphere" });
 
-SkillSchema.index({ location: '2dsphere' });
-
-module.exports = mongoose.model('Skill', SkillSchema);
+module.exports = mongoose.model('Skill',skillSchema);

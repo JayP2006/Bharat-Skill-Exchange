@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
+  // --- EXISTING FIELDS ---
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
@@ -10,33 +11,48 @@ const UserSchema = new mongoose.Schema({
     enum: ['Guru', 'Shishya', 'Admin'],
     default: 'Shishya',
   },
-  location: {
+   location: {
     type: {
       type: String,
       enum: ['Point'],
+      default: 'Point',
     },
     coordinates: {
-      type: [Number], 
+      type: [Number],
+      default: undefined, // 👈 IMPORTANT
     },
   },
+
+  locationText: { type: String },
   avatar: { type: String, default: 'default_avatar_url' },
   bio: { type: String },
   online: { type: Boolean, default: false },
-}, { timestamps: true });
 
+  // --- ✨ NEW UPGRADE FIELDS ---
+  headline: { type: String, trim: true },
+  walletBalance: { type: Number, default: 3 }, // Free Credits
+  skillsOffered: [{
+    skillName: { type: String },
+    proficiency: { type: String, enum: ['Beginner', 'Intermediate', 'Expert'] }
+  }],
+  skillsWanted: [{ type: String }],
+  timezone: { type: String, default: "Asia/Kolkata" },
+  availability: [{
+    day: { type: String },
+    slots: [String]
+  }],
+
+  // Relations (Preserved)
+  workshops: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Workshop' }],
+  certificates: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Certificate' }],
+
+}, { timestamps: true });
 
 UserSchema.index({ location: '2dsphere' });
 
+// ❌ REMOVED: pre('save') middleware (Ab Model hash nahi karega)
 
-UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
-
-
+// ✅ KEEP: Password Match Method (Login ke waqt compare karne ke liye ye zaroori hai)
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

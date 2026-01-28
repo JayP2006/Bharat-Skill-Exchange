@@ -1,62 +1,115 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
-import { Button } from '@/components/ui/Button';
-import { Star, MapPin } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Star, Clock, User } from 'lucide-react';
 
 const SkillCard = ({ skill }) => {
-  const navigate = useNavigate();
-  const getInitials = (name = '') => name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'G';
+  const {
+    _id,
+    title,
+    description,
+    category,
+    level,
+    duration,
+    instructor,
+    rating,
+    reviewCount,
+    media, // 👈 CHANGED: Retrieve 'media' array instead of 'image'
+  } = skill;
+
+  // 🔥 Logic: Use the first image from media array as thumbnail
+  const thumbnail = media && media.length > 0 ? media[0] : null;
+
+  const getLevelColor = (level) => {
+    switch (level?.toLowerCase()) {
+      case 'beginner':
+        return 'badge-success';
+      case 'intermediate':
+        return 'badge-warning';
+      case 'advanced':
+        return 'badge-primary';
+      default:
+        return 'badge-primary';
+    }
+  };
 
   return (
-    <motion.div
-      whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)" }}
-      className="h-full"
-    >
-      <Card className="overflow-hidden h-full flex flex-col group">
-        <div className="relative">
-            <img 
-                src={skill.media?.[0] || `https://placehold.co/600x400/6366f1/FFFFFF?text=${skill.title.charAt(0)}`}
-                alt={skill.title}
-                className="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+    <Link to={`/skills/${_id}`} className="block">
+      <div className="card-elevated card-hover overflow-hidden group">
+        
+        {/* Image Section */}
+        <div className="relative h-48 bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
+          {thumbnail ? (
+            // ✅ Display AI Generated Image if available
+            <img
+              src={thumbnail}
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded-full text-white ${skill.mode === 'Online' ? 'bg-green-500' : 'bg-blue-500'}`}>
-                {skill.mode}
+          ) : (
+            // ❌ Fallback to Initials if no image
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">{title?.charAt(0)}</span>
+              </div>
             </div>
+          )}
+          
+          <div className="absolute top-3 left-3">
+            <span className="px-3 py-1 rounded-full bg-background/90 backdrop-blur-sm text-xs font-medium text-foreground">
+              {category}
+            </span>
+          </div>
         </div>
-        <CardHeader className="flex flex-row items-center gap-4">
-            <Avatar>
-                <AvatarImage src={skill.guru?.avatar} alt={skill.guru?.name} />
-                <AvatarFallback>{getInitials(skill.guru?.name)}</AvatarFallback>
-            </Avatar>
-            <div>
-                <CardTitle className="text-lg leading-tight">{skill.title}</CardTitle>
-                <p className="text-sm text-muted-foreground">{skill.guru?.name}</p>
-            </div>
-        </CardHeader>
-        <CardContent className="flex-grow flex flex-col justify-between">
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{skill.description}</p>
-            <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-1 font-semibold text-amber-500">
-                    <Star className="w-4 h-4 fill-current" />
-                    <span>{skill.averageRating?.toFixed(1) || 'New'}</span>
-                </div>
-                {skill.mode === 'Offline' && skill.location?.address && (
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        <span className="truncate w-24" title={skill.location.address}>{skill.location.address}</span>
-                    </div>
+
+        {/* Content Section (Unchanged) */}
+        <div className="p-5 space-y-4">
+          <div>
+            <h3 className="font-display font-semibold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+              {title}
+            </h3>
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+              {description}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className={getLevelColor(level)}>{level}</span>
+            <span className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Clock className="w-4 h-4" />
+              {duration || '1h'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-border">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                {instructor?.avatar ? (
+                  <img
+                    src={instructor.avatar}
+                    alt={instructor.name}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-4 h-4 text-primary" />
                 )}
+              </div>
+              <span className="text-sm font-medium text-foreground truncate max-w-[100px]">
+                {instructor?.name || 'Instructor'}
+              </span>
             </div>
-        </CardContent>
-        <CardFooter className="flex items-center justify-between">
-            <span className="font-bold text-lg text-primary">₹{skill.hourlyRate}<span className="text-sm font-normal text-muted-foreground">/hr</span></span>
-            <Button onClick={() => navigate(`/booking/${skill._id}`)}>Book Now</Button>
-        </CardFooter>
-      </Card>
-    </motion.div>
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 text-accent fill-accent" />
+              <span className="text-sm font-medium text-foreground">
+                {rating?.toFixed(1) || '5.0'}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                ({reviewCount || 0})
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 };
 

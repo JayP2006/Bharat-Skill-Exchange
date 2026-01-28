@@ -1,4 +1,6 @@
+const Booking = require('../models/Booking');
 const Skill = require('../models/Skill');
+const generateAiThumbnail = require('../utils/aiThumbnailGenerator');
 
 
 exports.getAllSkills = async (req, res, next) => {
@@ -6,35 +8,38 @@ exports.getAllSkills = async (req, res, next) => {
     const { search, lat, lng, radius } = req.query;
     let query = {};
 
-    
+    // 🔍 Search
     if (search) {
       const searchRegex = new RegExp(search, 'i');
       query.$or = [
         { title: searchRegex },
         { description: searchRegex },
-        { tags: searchRegex },
+        { topics: searchRegex }, // 👈 tags → topics FIX
       ];
     }
 
-    
+    // 🌍 Geo filter
     if (lat && lng) {
       const latitude = parseFloat(lat);
       const longitude = parseFloat(lng);
-      const searchRadius = parseFloat(radius) || 10; 
+      const searchRadius = parseFloat(radius) || 10;
       const earthRadiusKm = 6378.1;
       const radiusInRadians = searchRadius / earthRadiusKm;
 
       query.location = {
         $geoWithin: {
-          $centerSphere: [[longitude, latitude], radiusInRadians]
-        }
+          $centerSphere: [[longitude, latitude], radiusInRadians],
+        },
       };
-      query.mode = 'Offline'; 
+
+      query.mode = "Offline";
     }
 
-    const skills = await Skill.find(query).populate('guru', 'name avatar');
-    
-    res.status(200).json(skills);
+    const skills = await Skill.find(query).populate("guru", "name avatar");
+
+    res.status(200).json({
+      skills, // ✅ CONSISTENT CONTRACT
+    });
   } catch (error) {
     console.error("Error fetching skills:", error);
     next(error);
@@ -44,48 +49,112 @@ exports.getAllSkills = async (req, res, next) => {
 
 exports.createSkill = async (req, res, next) => {
   try {
-    const { title, description, tags, hourlyRate, mode, coordinates, address } = req.body;
-    console.log("Creating skill with data:", req.user);
-    const newSkill = {
-      guru: req.user.id,
-      title, description, tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
-      hourlyRate, mode,
-      media: req.files ? req.files.map(file => file.path) : [],
+    const {
+      title,
+      description,
+      category,
+      level,
+      duration,
+      topics,
+      requirements,
+      hourlyRate,
+      mode,
+      coordinates,
+      media, // 👈 Get media from frontend (might be empty)
+    } = req.body;
+
+    // 🔒 VALIDATION
+    if (!title || !description || !category || !level || !duration) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // 🔥 AI THUMBNAIL LOGIC
+    let finalMedia = media || [];
+    console.log("title",title);
+    // If user didn't provide any image, generate one using AI
+    if (finalMedia.length === 0) {
+      const aiImageUrl = await generateAiThumbnail(title, category);
+      finalMedia.push(aiImageUrl);
+    }
+
+    const skillData = {
+      guru: req.user._id,
+      title,
+      description,
+      category,
+      level,
+      duration,
+      topics,
+      requirements,
+      hourlyRate,
+      mode,
+      media: finalMedia, // 👈 Save the AI image (or user image) here
     };
-    if (mode === 'Offline' && coordinates) {
-      newSkill.location = {
-        type: 'Point',
-        coordinates: coordinates.split(',').map(coord => parseFloat(coord)),
-        address
+
+    // ✅ ONLY ADD location IF coordinates VALID
+    if (
+      Array.isArray(coordinates) &&
+      coordinates.length === 2 &&
+      typeof coordinates[0] === "number" &&
+      typeof coordinates[1] === "number"
+    ) {
+      skillData.location = {
+        type: "Point",
+        coordinates,
       };
     }
-    const skill = await Skill.create(newSkill);
-    console.log("Skill created successfully:", skill);
+
+    const skill = await Skill.create(skillData);
+
     res.status(201).json(skill);
   } catch (error) {
-    console.log("Error creating skill:", error);
     next(error);
   }
 };
 
 
-exports.getSkillById = async (req, res, next) => {
-    try {
-        const skill = await Skill.findById(req.params.id).populate('guru', 'name avatar bio');
-        if (!skill) {
-            return res.status(404).json({ message: 'Skill not found' });
-        }
-        res.status(200).json(skill);
-    } catch (error) {
-        next(error);
+
+  exports.getSingleSkill = async (req, res, next) => {
+  try {
+    // 1. Skill dhoondho
+    const skill = await Skill.findById(req.params.id)
+      .populate('guru', 'name avatar title bio'); // Instructor details
+
+    if (!skill) {
+      return res.status(404).json({ message: 'Skill not found' });
     }
+
+    // 🔥 NEW LOGIC: Enrolled Students Count karo
+    // Hum check karenge kitne bookings hain jo confirm ho chuki hain (Scheduled/Accepted/Completed)
+    const enrolledCount = await Booking.countDocuments({
+      skill: req.params.id,
+      status: { $in: ['ACCEPTED', 'SCHEDULED', 'COMPLETED'] } 
+    });
+
+    // 2. Skill object mein 'enrolledCount' add karke bhejo
+    // .toObject() zaroori hai kyunki Mongoose document directly edit nahi hota
+    const skillData = { 
+      ...skill.toObject(), 
+      enrolledCount: enrolledCount 
+    };
+
+    res.status(200).json({ 
+      success: true, 
+      skill: skillData 
+    });
+
+  } catch (error) {
+    next(error);
+  }
 };
 
 
 exports.getMySkills = async (req, res, next) => {
     try {
         const skills = await Skill.find({ guru: req.user.id });
-        res.status(200).json(skills);
+        res.status(200).json({
+  skills,
+});
     } catch (error) {
         console.error("Error fetching user's skills:", error);
         next(error);

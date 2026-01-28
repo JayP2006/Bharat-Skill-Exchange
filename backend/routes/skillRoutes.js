@@ -6,7 +6,8 @@ const {
     getSkillById, 
     updateSkill, 
     deleteSkill, 
-    getMySkills 
+    getMySkills, 
+    getSingleSkill
 } = require('../controllers/skillController');
 const { protect } = require('../middlewares/auth');
 const { authorize } = require('../middlewares/role');
@@ -21,7 +22,7 @@ router.route('/')
   .get(getAllSkills);
 
 router.route('/:id')
-  .get(getSkillById)
+  .get(getSingleSkill)
   .put(protect, authorize('Guru'), upload.array('media', 5), updateSkill)
   .delete(protect, authorize('Guru'), deleteSkill);
 module.exports = router;

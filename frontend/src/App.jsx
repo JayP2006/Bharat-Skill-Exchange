@@ -1,78 +1,96 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { AnimatePresence } from 'framer-motion';
-import useAuthStore from '@/store/authStore';
-import { useSocket } from '@/hooks/useSocket';
-import Navbar from '@/components/common/Navbar';
-import Footer from '@/components/common/Footer';
-import ProtectedRoute from '@/components/common/ProtectedRoute';
-import Home from '@/pages/Home';
-import Login from '@/components/Auth/Login';
-import Signup from '@/components/Auth/Signup';
-import Profile from '@/pages/Profile';
-import SkillSearch from '@/pages/SkillSearch';
-import Booking from '@/pages/Booking';
-import ChatPage from '@/pages/ChatPage';
-import AdminDashboard from '@/pages/AdminDashboard';
-import NotFound from '@/pages/NotFound';
-import Dashboard from './pages/Dashboard';
-import MyWorkshops from './pages/MyWorkshops';
-import { ThemeProvider } from './context/themeContext.jsx';
-import WorkshopCard from './components/Workshops/WorkshopCard.jsx';
-import WorkshopForm from './components/Workshops/WorkshopForm.jsx';
-import PageLayout from './components/common/PageLayout';
-import EditWorkshopModal from './components/Workshops/EditWorkshopModal.jsx';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
-function App() {
-  const { loadUser } = useAuthStore();
-  const location = useLocation();
+// Pages
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import SkillsPage from './pages/SkillsPage';
+import SkillDetailPage from './pages/SkillDetailPage';
+import WorkshopsPage from './pages/WorkshopsPage';
+import WorkshopDetailPage from './pages/WorkshopDetailPage';
+import DashboardPage from './pages/DashboardPage';
+import MessagesPage from './pages/MessagesPage';
+import CertificatesPage from './pages/CertificatesPage';
+import ProfilePage from './pages/ProfilePage';
+import CreateSkillPage from './pages/CreateSkillPage';
+import UserProfilePage from './pages/UserProfilePage';
+import BookingsPage from './pages/BookingsPage'; // ✅ NEW
+import NotFound from './pages/NotFound';
 
-  useSocket();
+const App = () => {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/skills" element={<SkillsPage />} />
+          <Route path="/skills/:id" element={<SkillDetailPage />} />
+          <Route path="/workshops" element={<WorkshopsPage />} />
+          <Route path="/workshops/:id" element={<WorkshopDetailPage />} />
+          <Route path="/users/:id" element={<UserProfilePage />} />
 
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
- 
-     return (
-    <ThemeProvider>
-      <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
-        <Toaster position="top-center" reverseOrder={false} />
-        <Navbar />
-        {/* 👈 2. Yahaan se container classes hata dein */}
-        <main className="flex-grow">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              {/* === Full-Width Page Route === */}
-              {/* Is route par layout apply nahi hoga */}
-              <Route path="/" element={<Home />} />
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
 
-              {/* === Standard Container Page Routes === */}
-              {/* Yeh saare routes PageLayout ke andar render honge */}
-              <Route element={<PageLayout />}>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/skills" element={<SkillSearch />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/booking/:skillId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
-                <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-                <Route path="/chat/:userId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-                <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
-                <Route path="/my-workshops" element={<ProtectedRoute><WorkshopCard /></ProtectedRoute>} />
-                <Route path="/Add-workshops" element={<ProtectedRoute><WorkshopForm /></ProtectedRoute>} />
-                <Route path="/edit-workshop" element={<ProtectedRoute><EditWorkshopModal/></ProtectedRoute>}/>
-              </Route>
+          <Route
+            path="/dashboard/skills/create"
+            element={
+              <ProtectedRoute>
+                <CreateSkillPage />
+              </ProtectedRoute>
+            }
+          />
 
-              {/* NotFound Route (Layout ke bahar rakhein ya andar, aapki choice hai) */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
-        <Footer />
-      </div>
-    </ThemeProvider>
+          {/* 🔥 COMMON BOOKINGS ROUTE (Guru + Learner) */}
+          <Route
+            path="/dashboard/bookings"
+            element={
+              <ProtectedRoute>
+                <BookingsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <MessagesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/certificates"
+            element={
+              <ProtectedRoute>
+                <CertificatesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+<Route path="/users/:id" element={<ProfilePage />} />
+
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
