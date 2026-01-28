@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { User, Mail, MapPin, Briefcase, Star, MessageSquare } from 'lucide-react';
 import Layout from '../components/layout/Layout.jsx';
-import SkillCard from '../components/skills/SkillItem.jsx';
+import SkillCard from '../components/skills/SkillCard.jsx';
 import ReviewCard from '../components/reviews/ReviewCard.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import ErrorMessage from '../components/ui/ErrorMessage.jsx';

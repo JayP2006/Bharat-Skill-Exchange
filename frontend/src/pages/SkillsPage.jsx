@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, X } from 'lucide-react';
 import Layout from '../components/layout/Layout.jsx';
-import SkillCard from '../components/skills/SkillItem.jsx';
+import SkillCard from '../components/skills/SkillCard.jsx';
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
 import ErrorMessage from '../components/ui/ErrorMessage.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
