@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Plus, X } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import { skillService } from '../services/skillService';
+import Layout from '../components/layout/Layout.jsx';
+import { skillService } from '../services/skillService.js';
 
 const CreateSkillPage = () => {
   const navigate = useNavigate();

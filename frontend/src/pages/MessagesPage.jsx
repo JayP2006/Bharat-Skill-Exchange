@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Send, User, ArrowLeft, MessageSquare, AlertCircle } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EmptyState from '../components/ui/EmptyState';
-import { useAuth } from '../context/AuthContext';
-import { messageService } from '../services/messageService';
-import { userService } from '../services/userService';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import EmptyState from '../components/ui/EmptyState.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { messageService } from '../services/messageService.js';
+import { userService } from '../services/userService.js';
 
 const MessagesPage = () => {
   const { user } = useAuth();

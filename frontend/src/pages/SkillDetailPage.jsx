@@ -11,15 +11,15 @@ import {
   CheckCircle,
   Loader2
 } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import ReviewCard from '../components/reviews/ReviewCard';
-import ReviewForm from '../components/reviews/ReviewForm';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorMessage from '../components/ui/ErrorMessage';
-import { useAuth } from '../context/AuthContext';
-import { skillService } from '../services/skillService';
-import { bookingService } from '../services/bookingService';
-import { reviewService } from '../services/reviewService';
+import Layout from '../components/layout/Layout.jsx';
+import ReviewCard from '../components/reviews/ReviewCard.jsx';
+import ReviewForm from '../components/reviews/ReviewForm.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import ErrorMessage from '../components/ui/ErrorMessage.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { skillService } from '../services/skillService.js';
+import { bookingService } from '../services/bookingService.js';
+import { reviewService } from '../services/reviewService.js';
 
 const SkillDetailPage = () => {
   const { id } = useParams();

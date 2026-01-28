@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { User, Mail, MapPin, Briefcase, Star, MessageSquare } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import SkillCard from '../components/skills/SkillCard';
-import ReviewCard from '../components/reviews/ReviewCard';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorMessage from '../components/ui/ErrorMessage';
-import { useAuth } from '../context/AuthContext';
-import { userService } from '../services/userService';
-import { skillService } from '../services/skillService';
-import { reviewService } from '../services/reviewService';
+import Layout from '../components/layout/Layout.jsx';
+import SkillCard from '../components/skills/SkillCard.jsx';
+import ReviewCard from '../components/reviews/ReviewCard.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import ErrorMessage from '../components/ui/ErrorMessage.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { userService } from '../services/userService.js';
+import { skillService } from '../services/skillService.js';
+import { reviewService } from '../services/reviewService.js';
 
 const UserProfilePage = () => {
   const { id } = useParams();

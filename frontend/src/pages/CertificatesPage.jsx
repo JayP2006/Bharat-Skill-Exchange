@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Award, Download, ExternalLink, CheckCircle } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EmptyState from '../components/ui/EmptyState';
-import ErrorMessage from '../components/ui/ErrorMessage';
-import { certificateService } from '../services/certificateService';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import EmptyState from '../components/ui/EmptyState.jsx';
+import ErrorMessage from '../components/ui/ErrorMessage.jsx';
+import { certificateService } from '../services/certificateService.js';
 
 const CertificatesPage = () => {
   const [certificates, setCertificates] = useState([]);

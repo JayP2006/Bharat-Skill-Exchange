@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { bookingService } from '../services/bookingService';
-import { useAuth } from '../context/AuthContext';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import { bookingService } from '../services/bookingService.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import { Calendar } from 'lucide-react';
 
 const BookingsPage = () => {

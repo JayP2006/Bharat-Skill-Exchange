@@ -4,12 +4,12 @@ import {
   User, Mail, MapPin, Briefcase, Edit2, Save, X, Loader2, 
   Clock, Plus, Trash2, Calendar, Users, MessageSquare 
 } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { useAuth } from '../context/AuthContext';
-import { userService } from '../services/userService';
-import { reviewService } from '../services/reviewService';
-import ReviewCard from '../components/reviews/ReviewCard';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { userService } from '../services/userService.js';
+import { reviewService } from '../services/reviewService.js';
+import ReviewCard from '../components/reviews/ReviewCard.jsx';
 import api from '../config/api';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

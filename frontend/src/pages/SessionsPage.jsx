@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../components/layout/Layout';
-import { sessionService } from '../services/sessionService';
-import { useAuth } from '../context/AuthContext';
+import Layout from '../components/layout/Layout.jsx';
+import { sessionService } from '../services/sessionService.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const SessionsPage = () => {
   const { user } = useAuth();

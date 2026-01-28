@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Calendar, Video } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import SessionCard from '../components/sessions/SessionCard'; 
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorMessage from '../components/ui/ErrorMessage';
-import EmptyState from '../components/ui/EmptyState';
-import { sessionService } from '../services/sessionService';
+import Layout from '../components/layout/Layout.jsx';
+import SessionCard from '../components/sessions/SessionCard.jsx'; 
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import ErrorMessage from '../components/ui/ErrorMessage.jsx';
+import EmptyState from '../components/ui/EmptyState.jsx';
+import { sessionService } from '../services/sessionService.js';
 import api from '../config/api'; // API call ke liye
 import { useToast } from "@/components/ui/use-toast"; // Shadcn toast for feedback
 

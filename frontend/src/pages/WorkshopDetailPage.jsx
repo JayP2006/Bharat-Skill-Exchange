@@ -10,11 +10,11 @@ import {
   Loader2,
   CheckCircle
 } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorMessage from '../components/ui/ErrorMessage';
-import { useAuth } from '../context/AuthContext';
-import { workshopService } from '../services/workshopService';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import ErrorMessage from '../components/ui/ErrorMessage.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { workshopService } from '../services/workshopService.js';
 
 const WorkshopDetailPage = () => {
   const { id } = useParams();
