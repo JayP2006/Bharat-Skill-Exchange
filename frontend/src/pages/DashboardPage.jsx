@@ -13,15 +13,15 @@ import {
   Star,
   CheckCircle
 } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ReviewForm from '../components/reviews/ReviewForm'; // ✅ Import Review Form
-import { useAuth } from '../context/AuthContext';
-import { bookingService } from '../services/bookingService';
-import { skillService } from '../services/skillService';
-import { userService } from '../services/userService';
-import { certificateService } from '../services/certificateService'; // ✅ Import Cert Service
-import api from '../config/api';
+import Layout from '../components/layout/Layout.jsx';
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx';
+import ReviewForm from '../components/reviews/ReviewForm.jsx'; // ✅ Import Review Form
+import { useAuth } from '../context/AuthContext.jsx';
+import { bookingService } from '../services/bookingService.js';
+import { skillService } from '../services/skillService.js';
+import { userService } from '../services/userService.js';
+import { certificateService } from '../services/certificateService.js'; // ✅ Import Cert Service
+import api from '../config/api.js';
 
 const DashboardPage = () => {
   const { user } = useAuth();
