@@ -20,7 +20,7 @@ const app = express(); // Sirf Express App banaya
 
 // --- 3. MIDDLEWARE ---
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: 'https://shiksha-mudraa.onrender.com',
   credentials: true,
 }));
 app.use(helmet());
