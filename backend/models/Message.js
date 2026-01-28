@@ -19,7 +19,6 @@ const MessageSchema = new mongoose.Schema({
     type: Boolean, 
     default: false 
   },
-  // Optional: Link to specific booking if needed for tracking
   booking: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking'

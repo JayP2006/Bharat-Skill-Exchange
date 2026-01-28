@@ -1,5 +1,4 @@
 const express = require('express');
-// ✅ Add getMySkills to the import list
 const { 
     createSkill, 
     getAllSkills, 

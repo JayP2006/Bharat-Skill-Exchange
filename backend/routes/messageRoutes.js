@@ -9,7 +9,6 @@ const { protect } = require('../middlewares/auth');
 
 const router = express.Router();
 
-// Order matters! Specific routes before parameters.
 router.get('/conversations', protect, getConversations);
 router.post('/', protect, sendMessage);
 router.get('/:receiverId', protect, getMessages);

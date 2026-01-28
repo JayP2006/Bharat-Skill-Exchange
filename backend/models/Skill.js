@@ -69,7 +69,6 @@ const skillSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔥 Geo index (SAFE)
 skillSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model('Skill',skillSchema);

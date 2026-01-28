@@ -13,7 +13,7 @@ import {
   Globe
 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
-import SkillCard from '../components/skills/SkillCard';
+import SkillCard from '../components/skills/SkillCard'
 import { skillService } from '../services/skillService';
 
 const HomePage = () => {

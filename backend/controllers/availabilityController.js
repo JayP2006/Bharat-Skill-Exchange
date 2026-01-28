@@ -1,6 +1,5 @@
 const GuruAvailability = require('../models/GuruAvailability');
 
-// 🔥 SAVE / UPDATE AVAILABILITY + MAX STUDENTS
 exports.saveAvailability = async (req, res) => {
   const { slots, maxStudents } = req.body;
 
@@ -9,7 +8,7 @@ exports.saveAvailability = async (req, res) => {
       { guru: req.user.id },
       {
         slots,
-        maxStudents, // ✅ NEW (capacity)
+        maxStudents, 
       },
       {
         upsert: true,
@@ -26,7 +25,6 @@ exports.saveAvailability = async (req, res) => {
   }
 };
 
-// 🔍 GET AVAILABILITY (UNCHANGED)
 exports.getAvailability = async (req, res) => {
   try {
     const availability = await GuruAvailability.findOne({

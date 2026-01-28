@@ -10,9 +10,8 @@ const ReviewSchema = new mongoose.Schema({
   comment: { type: String, required: true },
 }, { timestamps: true });
 
-// 🔥 REAL-TIME CALCULATION LOGIC
+
 ReviewSchema.statics.calcAverageRating = async function(skillId) {
-  // 1. Saare reviews ka average nikalo
   const stats = await this.aggregate([
     {
       $match: { skill: skillId }
@@ -31,12 +30,11 @@ ReviewSchema.statics.calcAverageRating = async function(skillId) {
     if (stats.length > 0) {
       await Skill.findByIdAndUpdate(skillId, {
         rating: stats[0].averageRating,
-        // Agar aapke Skill model mein 'reviewCount' field hai to use bhi update karein
-        // reviewCount: stats[0].numOfReviews 
+        
       });
       console.log(`✅ Rating Updated: ${stats[0].averageRating}`);
     } else {
-      // Agar reviews delete ho gaye aur 0 bache
+      
       await Skill.findByIdAndUpdate(skillId, {
         rating: 0,
       });
@@ -46,14 +44,10 @@ ReviewSchema.statics.calcAverageRating = async function(skillId) {
   }
 };
 
-// Jab Naya Review Save ho -> Tab Calculate karo
 ReviewSchema.post('save', function() {
   this.constructor.calcAverageRating(this.skill);
 });
 
-// (Optional) Jab Review Delete ho (Agar future mein delete feature laye)
-// ReviewSchema.post('remove', function() {
-//   this.constructor.calcAverageRating(this.skill);
-// });
+
 
 module.exports = mongoose.model('Review', ReviewSchema);

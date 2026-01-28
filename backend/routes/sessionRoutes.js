@@ -9,7 +9,7 @@ const {
   getMySessions,
   addMeetingLink,
   getAllUserSessions,
-  getUpcomingSessions,   // 🔥 MUST EXIST
+  getUpcomingSessions,   
 } = require('../controllers/sessionController');
 
 router.post('/', protect, requestSession);

@@ -3,9 +3,6 @@ const SessionRequest = require('../models/SessionRequest');
 const User = require('../models/User');
 const { v4: uuidv4 } = require('uuid');
 
-/**
- * SHISHYA → Request Session
- */
 exports.requestSession = async (req, res) => {
   const { receiverId, skillName, requestedDate } = req.body;
 
@@ -34,9 +31,7 @@ exports.requestSession = async (req, res) => {
   }
 };
 
-/**
- * GURU → Accept + Schedule Session
- */
+
 exports.acceptSession = async (req, res) => {
   try {
     const session = await SessionRequest.findById(req.params.id);
@@ -52,9 +47,7 @@ exports.acceptSession = async (req, res) => {
   }
 };
 
-/**
- * GURU → Complete Session
- */
+
 exports.completeSession = async (req, res) => {
   try {
     const session = await SessionRequest.findById(req.params.id);
@@ -67,7 +60,6 @@ exports.completeSession = async (req, res) => {
     session.status = 'completed';
     await session.save();
 
-    // Credit Guru
     const guru = await User.findById(session.receiver);
     guru.walletBalance += 1;
     await guru.save();
@@ -78,9 +70,6 @@ exports.completeSession = async (req, res) => {
   }
 };
 
-/**
- * MY SESSIONS (Guru + Shishya)
- */
 exports.getMySessions = async (req, res) => {
   try {
     const sessions = await SessionRequest.find({
@@ -95,9 +84,7 @@ exports.getMySessions = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-/**
- * GURU → Add / Update Meeting Link
- */
+
 exports.addMeetingLink = async (req, res) => {
   const { meetingLink } = req.body;
   console.log(req.params.id, meetingLink);
@@ -128,11 +115,9 @@ exports.addMeetingLink = async (req, res) => {
 };
 exports.getUpcomingSessions = async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming auth middleware provides this
+    const userId = req.user._id;
 
-    // Find sessions where the user is either sender or receiver
-    // AND status is 'scheduled'
-    // AND requestedDate is greater than now
+  
     const sessions = await SessionRequest.find({
       $or: [{ sender: userId }, { receiver: userId }],
       status: 'scheduled',
@@ -171,7 +156,6 @@ exports.getAllUserSessions = async (req, res) => {
       $or: [{ sender: userId }, { receiver: userId }]
     };
 
-    // Agar filter 'upcoming' hai, toh sirf scheduled aur future sessions dikhayein
     if (filter === 'upcoming') {
       query.status = 'scheduled';
       query.requestedDate = { $gt: new Date() };

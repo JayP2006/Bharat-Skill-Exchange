@@ -12,8 +12,8 @@ const WorkshopSchema = new mongoose.Schema({
   price: { type: Number, default: 0 },
   
   // --- Links ---
-  liveLink: { type: String, default: null }, // <-- Yahan add karein
-  videoUrl: { type: String, default: null }, // <-- Yahan add karein
+  liveLink: { type: String, default: null },
+  videoUrl: { type: String, default: null }, 
 
 }, { timestamps: true });
 

@@ -1,22 +1,18 @@
 const Workshop = require('../models/Workshop');
 const User = require('../models/User');
 
-// Guru creates workshop
 exports.createWorkshop = async (req, res, next) => {
   try {
-    // 1️⃣ Create workshop
     let workshop = await Workshop.create({
       ...req.body,
       guru: req.user.id
     });
 
-    // 2️⃣ Populate fields
     await workshop.populate([
       { path: 'guru', select: 'name avatar' },
       { path: 'skill', select: 'title hourlyRate mode' }
     ]);
 
-    // 3️⃣ Send response
     res.status(201).json(workshop);
   } catch (error) {
     console.log("CREATE WORKSHOP ERROR:", error);
@@ -24,7 +20,6 @@ exports.createWorkshop = async (req, res, next) => {
   }
 };
 
-// Get all workshops (public)
 exports.getAllWorkshops = async (req, res, next) => {
   try {
     const filter = {};
@@ -43,7 +38,6 @@ exports.getAllWorkshops = async (req, res, next) => {
 };
 
 
-// Get workshops for student (only enrolled skills)
 exports.getStudentWorkshops = async (req, res, next) => {
   try {
     const student = await User.findById(req.user.id);
@@ -59,7 +53,6 @@ exports.getStudentWorkshops = async (req, res, next) => {
   }
 };
 
-// Student joins a workshop
 exports.joinWorkshop = async (req, res, next) => {
   try {
     const workshop = await Workshop.findById(req.params.workshopId);
@@ -76,22 +69,20 @@ exports.joinWorkshop = async (req, res, next) => {
     next(error);
   }
 };
-// ... other code in your controller
 
-const mongoose = require('mongoose'); // <-- Make sure mongoose is imported at the top
+
+const mongoose = require('mongoose'); 
 
 exports.getWorkshopsBySkill = async (req, res, next) => {
   try {
     const { skillId } = req.params;
     console.log(`--- BACKEND HIT with skillId: ${skillId} ---`);
 
-    // Check if the provided skillId is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(skillId)) {
       console.log("Invalid ObjectId format provided.");
       return res.status(400).json({ message: "Invalid Skill ID format" });
     }
 
-    // Convert the string ID to a Mongoose ObjectId
     const skillObjectId = new mongoose.Types.ObjectId(skillId);
 
     console.log(`Searching for workshops with skill ObjectId: ${skillObjectId}`);

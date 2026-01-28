@@ -32,7 +32,6 @@ exports.updateProfile = async (req, res) => {
       headline: title,
     };
 
-    // skills
     if (Array.isArray(skills)) {
       updateData.skillsOffered = skills.map(skill => ({
         skillName: skill,
@@ -40,13 +39,12 @@ exports.updateProfile = async (req, res) => {
       }));
     }
 
-    // 🌍 GPS LOCATION WITH NAME
     if (
       coordinates &&
       typeof coordinates.lat === 'number' &&
       typeof coordinates.lng === 'number'
     ) {
-      // Reverse geocode
+
       const geoRes = await axios.get(
         'https://nominatim.openstreetmap.org/reverse',
         {
@@ -78,7 +76,6 @@ exports.updateProfile = async (req, res) => {
       updateData.locationText = locationText;
     }
 
-    // manual text location (fallback)
     if (typeof location === 'string' && !coordinates) {
       updateData.locationText = location;
     }
@@ -151,7 +148,6 @@ exports.getUserById = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // 🔥 BACKEND FIX: normalize location
     const userObj = user.toObject();
 
     if (userObj.location && typeof userObj.location === 'object') {

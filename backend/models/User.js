@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-  // --- EXISTING FIELDS ---
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
@@ -19,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number],
-      default: undefined, // 👈 IMPORTANT
+      default: undefined, 
     },
   },
 
@@ -30,7 +29,7 @@ const UserSchema = new mongoose.Schema({
 
   // --- ✨ NEW UPGRADE FIELDS ---
   headline: { type: String, trim: true },
-  walletBalance: { type: Number, default: 3 }, // Free Credits
+  walletBalance: { type: Number, default: 3 }, 
   skillsOffered: [{
     skillName: { type: String },
     proficiency: { type: String, enum: ['Beginner', 'Intermediate', 'Expert'] }
@@ -50,9 +49,6 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.index({ location: '2dsphere' });
 
-// ❌ REMOVED: pre('save') middleware (Ab Model hash nahi karega)
-
-// ✅ KEEP: Password Match Method (Login ke waqt compare karne ke liye ye zaroori hai)
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

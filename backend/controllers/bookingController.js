@@ -1,17 +1,8 @@
 const Booking = require('../models/Booking');
 const Skill = require('../models/Skill');
-// 'createOrder' ki ab zaroorat nahi hai
 // const { createOrder } = require('../utils/payments');
 
-// @desc    Create a direct booking without payment
-// @route   POST /api/bookings
-// @access  Private
-// @desc    Create booking (auto or manual)
-// @route   POST /api/bookings
-// @access  Private
-// @desc    Create booking (AUTO ACCEPT if slot available)
-// @route   POST /api/bookings
-// @access  Private
+
 exports.createBooking = async (req, res) => {
   try {
     const { skillId, date, time } = req.body;
@@ -26,7 +17,7 @@ exports.createBooking = async (req, res) => {
       .toLocaleDateString('en-US', { weekday: 'long' })
       .toUpperCase();
 
-    // 🔥 Find guru availability for that day
+
     const availability = await GuruAvailability.findOne({
       guru: skill.guru._id,
       day,
@@ -42,7 +33,6 @@ exports.createBooking = async (req, res) => {
         scheduledAt >= slotStart && scheduledAt < slotEnd;
 
       if (isWithinSlot) {
-        // 🔥 COUNT already scheduled sessions
         const existingCount = await Booking.countDocuments({
           guru: skill.guru._id,
           status: 'SCHEDULED',
@@ -58,7 +48,6 @@ exports.createBooking = async (req, res) => {
       }
     }
 
-    // 🔥 Create booking
     const booking = await Booking.create({
       learner: req.user._id,
       guru: skill.guru._id,
@@ -68,7 +57,7 @@ exports.createBooking = async (req, res) => {
       durationInMinutes: 60,
     });
 
-    // 🔥 Create session ONLY if scheduled
+  
     let session = null;
     if (status === 'SCHEDULED') {
       session = await SessionRequest.create({
@@ -90,20 +79,18 @@ exports.createBooking = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-// verifyPaymentAndUpdateBooking function ki ab zaroorat nahi hai,
-// lekin use rakha jaa sakta hai agar aap baad mein payment add karna chahein.
+
 exports.verifyPaymentAndUpdateBooking = async (req, res, next) => {
     res.status(200).json({ message: "Verification not needed for direct booking." });
 };
 
-// getMyBookings waise hi kaam karega
 exports.getMyBookings = async (req, res, next) => {
   try {
     const bookings = await Booking.find({ learner: req.user.id })
       .populate('guru', 'name avatar')
       .populate('skill', 'title')
       .sort({ createdAt: -1 })
-      .lean(); // 🔥 VERY IMPORTANT
+      .lean(); 
 
     const bookingIds = bookings.map(b => b._id);
 
@@ -172,22 +159,20 @@ exports.acceptBooking = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    // 🔒 only Guru can accept
+ 
     if (booking.guru._id.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    // ✅ booking accept
     booking.status = 'ACCEPTED';
     await booking.save();
 
-    // 🔥🔥🔥 THIS IS WHERE SESSION IS CREATED 🔥🔥🔥
     const session = await SessionRequest.create({
-      booking: booking._id,          // 🔑 VERY IMPORTANT
-      sender: booking.learner._id,   // learner
-      receiver: booking.guru._id,    // guru
+      booking: booking._id,         
+      sender: booking.learner._id,   
+      receiver: booking.guru._id,    
       skillName: booking.skill.title,
-      status: 'scheduled',           // or 'pending' if you want
+      status: 'scheduled',         
       requestedDate: booking.scheduledAt,
     });
 
@@ -257,17 +242,14 @@ exports.completeBooking = async (req, res) => {
       return res.status(400).json({ message: "Only scheduled bookings can be completed" });
     }
 
-    // 1. Update Booking Status
     booking.status = "COMPLETED";
     await booking.save();
 
-    // 2. Update Related Session Status
     const session = await SessionRequest.findOne({ booking: booking._id });
     if (session) {
       session.status = 'completed';
       await session.save();
 
-      // 3. Credit Guru (Wallet logic)
       const guru = await User.findById(booking.guru);
       guru.walletBalance += 1;
       await guru.save();

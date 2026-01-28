@@ -17,29 +17,24 @@ exports.sendMessage = async (req, res, next) => {
       return res.status(400).json({ message: "Receiver and content are required" });
     }
 
-    // 🔥 FIX: Changed 'user' to 'learner' to match your Database Schema
+    
     const activeBooking = await Booking.findOne({
       $or: [
-        // Case 1: Sender is the Student (Learner), Receiver is the Guru
         { learner: senderId, guru: receiverId }, 
         
-        // Case 2: Sender is the Guru, Receiver is the Student (Learner)
         { learner: receiverId, guru: senderId }
       ],
-      // Checking for all valid statuses where chat should be allowed
       status: { $in: ['ACCEPTED', 'COMPLETED', 'SCHEDULED'] } 
     });
 
     console.log("Active Booking Found:", activeBooking);
 
-    // If no booking exists with these statuses, Deny access
     if (!activeBooking) {
       return res.status(403).json({ 
         message: "Messaging is only allowed after a Booking is Scheduled or Accepted." 
       });
     }
 
-    // Create Message
     const message = await Message.create({
       sender: senderId,
       receiver: receiverId,
@@ -47,7 +42,6 @@ exports.sendMessage = async (req, res, next) => {
       booking: activeBooking._id 
     });
 
-    // Populate sender details for frontend return
     await message.populate('sender', 'name avatar');
     await message.populate('receiver', 'name avatar');
 
@@ -56,8 +50,6 @@ exports.sendMessage = async (req, res, next) => {
     next(error);
   }
 };
-
-// ... (Keep the rest of the controller functions like getMessages, getConversations exactly the same) ...
 
 exports.getMessages = async (req, res, next) => {
   try {
