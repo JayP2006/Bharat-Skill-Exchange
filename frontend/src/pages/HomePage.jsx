@@ -13,8 +13,8 @@ import {
   Globe
 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
-import SkillCard from '../components/skills/SkillCard'
-import { skillService } from '../services/skillService';
+import SkillCard from '../components/skills/SkillCard.jsx';
+import { skillService } from '../services/skillService.js';
 
 const HomePage = () => {
   const [featuredSkills, setFeaturedSkills] = useState([]);
